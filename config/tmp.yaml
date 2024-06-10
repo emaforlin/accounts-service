@@ -1,0 +1,7 @@
+app:
+	port: 8080
+database:
+	name: "test-db"
+	user: "test"
+	password: "changepass"
+	host: "db.example.org:3306"
