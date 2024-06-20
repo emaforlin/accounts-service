@@ -10,7 +10,8 @@ type Config struct {
 }
 
 type App struct {
-	Port uint16
+	ApiVersion string
+	Port       uint16
 }
 
 type Db struct {
@@ -24,7 +25,8 @@ type Db struct {
 func LoadConfig() Config {
 	return Config{
 		App: App{
-			Port: viper.GetUint16("app.port"),
+			ApiVersion: viper.GetString("app.api"),
+			Port:       viper.GetUint16("app.port"),
 		},
 		Db: Db{
 			Name:   viper.GetString("database.name"),

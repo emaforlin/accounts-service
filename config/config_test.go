@@ -10,6 +10,7 @@ func TestLoadConfig(t *testing.T) {
 
 	content := []byte(`
 app:
+  api: v1beta1
   port: 8080
 database:
   name: test-db
@@ -38,6 +39,9 @@ database:
 	config := LoadConfig()
 
 	// Verificar los valores cargados
+	if config.App.ApiVersion != "v1beta1" {
+		t.Errorf("App api version 'v1beta1' was expected but have '%s'", config.App.ApiVersion)
+	}
 	if config.App.Port != 8080 {
 		t.Errorf("App port 8080 was expected but have %d", config.App.Port)
 	}
