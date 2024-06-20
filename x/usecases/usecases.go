@@ -5,11 +5,11 @@ import (
 	"github.com/emaforlin/accounts-service/x/models"
 )
 
-type AccountsUsecase interface {
-	// Account related
+type AccountUsecase interface {
+	// Accounts in general related
 	GetAccountDetails(in *models.GetAccountData) (*entities.User, error)
 	DeleteAccount(in *models.DeleteAccountData) error
 
-	// Person entity related
+	// Accounts of type Person related
 	AddPersonAccountDetails(in *models.AddPersonAccountData) error
 }

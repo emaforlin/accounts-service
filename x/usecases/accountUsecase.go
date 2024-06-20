@@ -7,18 +7,18 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type userUsecaseImpl struct {
+type accountUsecaseImpl struct {
 	repository repositories.AccountsRepository
 }
 
-func (u *userUsecaseImpl) DeleteAccount(in *models.DeleteAccountData) error {
+func (u *accountUsecaseImpl) DeleteAccount(in *models.DeleteAccountData) error {
 	return u.repository.DeleteUser(&entities.GetUserDto{
 		ID: in.Id,
 	})
 }
 
 // AddPersonAccountDetails implements AccountsUsecase.
-func (u *userUsecaseImpl) AddPersonAccountDetails(in *models.AddPersonAccountData) error {
+func (u *accountUsecaseImpl) AddPersonAccountDetails(in *models.AddPersonAccountData) error {
 	var dto = entities.InsertPersonDto{
 		FirstName: in.FirstName,
 		LastName:  in.LastName,
@@ -39,7 +39,7 @@ func (u *userUsecaseImpl) AddPersonAccountDetails(in *models.AddPersonAccountDat
 }
 
 // GetUserDetails implements UserUsecase.
-func (u *userUsecaseImpl) GetAccountDetails(in *models.GetAccountData) (*entities.User, error) {
+func (u *accountUsecaseImpl) GetAccountDetails(in *models.GetAccountData) (*entities.User, error) {
 	found, err := u.repository.SelectUser(&entities.GetUserDto{
 		Username:    in.Username,
 		Email:       in.Email,
@@ -53,6 +53,6 @@ func (u *userUsecaseImpl) GetAccountDetails(in *models.GetAccountData) (*entitie
 	return found, nil
 }
 
-func NewUserUsecaseImpl(repo repositories.AccountsRepository) AccountsUsecase {
-	return &userUsecaseImpl{repository: repo}
+func NewUserUsecaseImpl(repo repositories.AccountsRepository) AccountUsecase {
+	return &accountUsecaseImpl{repository: repo}
 }
