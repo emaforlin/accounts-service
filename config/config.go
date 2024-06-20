@@ -22,8 +22,8 @@ type Db struct {
 	Host   string
 }
 
-func LoadConfig() Config {
-	return Config{
+func LoadConfig() *Config {
+	return &Config{
 		App: App{
 			ApiVersion: viper.GetString("app.api"),
 			Port:       viper.GetUint16("app.port"),

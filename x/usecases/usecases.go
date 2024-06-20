@@ -11,5 +11,5 @@ type AccountUsecase interface {
 	DeleteAccount(in *models.DeleteAccountData) error
 
 	// Accounts of type Person related
-	AddPersonAccountDetails(in *models.AddPersonAccountData) error
+	AddPersonAccount(in *models.AddPersonAccountData) error
 }
