@@ -26,7 +26,7 @@ func (s *echoServer) Start() {
 	s.app.Use(middleware.Recover())
 	s.app.Use(middleware.TimeoutWithConfig(middleware.TimeoutConfig{Timeout: 5 * time.Second}))
 
-	serverURL := fmt.Sprintf(":%d", s.cfg.App.Port)
+	serverURL := fmt.Sprintf(":%d", s.cfg.App.Ports["web"])
 	s.app.Logger.Fatal(s.app.Start(serverURL))
 }
 
