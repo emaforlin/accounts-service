@@ -5,11 +5,13 @@
 Setup the service instace by editing `config.yaml`.
 
 ``` yaml
-app:
-  api: "v0.1"
-  port: 8014
+service:
+  api: "v0.1"       # api version
+  ports:  
+    - web: 8014     # http port
+    - rpc: 8015     # grpc port
 database:
-  name: "db-name"
+  name: "db-name"  
   user: "db-username"
   password: "changepass"
   host: "localhost:3306"
