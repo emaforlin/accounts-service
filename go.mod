@@ -3,15 +3,20 @@ module github.com/emaforlin/accounts-service
 go 1.21.6
 
 require (
+	github.com/golang/protobuf v1.5.3
+	github.com/hashicorp/go-hclog v1.5.0
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/viper v1.18.2
 	golang.org/x/crypto v0.22.0
+	google.golang.org/grpc v1.59.0
+	google.golang.org/protobuf v1.31.0
 	gorm.io/driver/mysql v1.5.6
 	gorm.io/gorm v1.25.10
 )
 
 require (
+	github.com/fatih/color v1.14.1 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
@@ -41,6 +46,7 @@ require (
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20231120223509-83a465c0220f // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
