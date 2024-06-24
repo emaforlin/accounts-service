@@ -11,7 +11,7 @@ type Config struct {
 
 type App struct {
 	ApiVersion string
-	Port       uint16
+	Ports      map[string]uint16
 }
 
 type Db struct {
@@ -23,10 +23,15 @@ type Db struct {
 }
 
 func LoadConfig() *Config {
+	var ports map[string]uint16
+	err := viper.UnmarshalKey("service.ports", &ports)
+	if err != nil {
+		panic("error loading config file")
+	}
 	return &Config{
 		App: App{
-			ApiVersion: viper.GetString("app.api"),
-			Port:       viper.GetUint16("app.port"),
+			ApiVersion: viper.GetString("service.api"),
+			Ports:      ports,
 		},
 		Db: Db{
 			Name:   viper.GetString("database.name"),
