@@ -12,4 +12,6 @@ type AccountUsecase interface {
 
 	// Accounts of type Person related
 	AddPersonAccount(in *models.AddPersonAccountData) error
+
+	// Accounts of type FoodPlace
 }

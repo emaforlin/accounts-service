@@ -37,11 +37,10 @@ func (s *echoServer) initializeHttpHandlers() {
 	httpHandler := handlers.NewAccountHttpHandler(usecase)
 
 	// 	Routers
-	s.app.GET(s.cfg.App.ApiVersion+"/health", func(c echo.Context) error {
+	router := s.app.Group(s.cfg.App.ApiVersion + "/accounts")
+	router.GET("/health", func(c echo.Context) error {
 		return c.String(200, "OK")
 	})
-
-	router := s.app.Group(s.cfg.App.ApiVersion + "/accounts")
 	router.POST("/signup", httpHandler.SignupPerson)
 }
 

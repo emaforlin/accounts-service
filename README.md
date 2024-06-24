@@ -16,3 +16,10 @@ database:
   password: "changepass"
   host: "localhost:3306"
 ```
+
+## Endpoints
+
+### HTTP: /{api_vers}/accounts
+
+* **GET** /health
+* **POST** /signup
