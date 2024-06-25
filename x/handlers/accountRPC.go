@@ -27,7 +27,7 @@ func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.Ac
 		h.log.Error("cannot find user", err)
 		return nil, err
 	}
-	h.log.Info("Get user by username.")
+	h.log.Info("Handle Get User")
 
 	return &protos.AccountDetailsResponse{
 		Id:          found.ID,

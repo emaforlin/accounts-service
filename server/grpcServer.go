@@ -11,7 +11,7 @@ import (
 	"github.com/emaforlin/accounts-service/x/handlers"
 	"github.com/emaforlin/accounts-service/x/repositories"
 	"github.com/emaforlin/accounts-service/x/usecases"
-	hclog "github.com/hashicorp/go-hclog"
+	"github.com/hashicorp/go-hclog"
 	"google.golang.org/grpc"
 )
 

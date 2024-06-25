@@ -23,7 +23,9 @@ type echoServer struct {
 func (s *echoServer) Start() {
 	s.initializeHttpHandlers()
 
-	s.app.Use(middleware.Logger())
+	s.app.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "${time_rfc3339} ${method} ${uri} ${status}\n",
+	}))
 	s.app.Use(middleware.Recover())
 	s.app.Use(middleware.TimeoutWithConfig(middleware.TimeoutConfig{Timeout: 5 * time.Second}))
 
