@@ -21,17 +21,13 @@ func (u *accountUsecaseImpl) DeleteAccount(in *models.DeleteAccountData) error {
 
 // AddPersonAccountDetails implements AccountsUsecase.
 func (u *accountUsecaseImpl) AddPersonAccount(in *models.AddPersonAccountData) error {
-	found, err := u.repository.SelectUser(&entities.GetUserDto{
+	_, err := u.repository.SelectUser(&entities.GetUserDto{
 		Username:    in.Username,
 		Email:       in.Email,
 		PhoneNumber: in.PhoneNumber,
 	})
 	if err != nil {
 		return err
-	}
-
-	if found != nil {
-		return fmt.Errorf("user already exists")
 	}
 
 	var dto = entities.InsertPersonDto{
@@ -49,7 +45,7 @@ func (u *accountUsecaseImpl) AddPersonAccount(in *models.AddPersonAccountData) e
 	err = u.repository.InsertPerson(&dto)
 	if err != nil {
 		log.Err(err)
-		return err
+		return fmt.Errorf("error creating account")
 	}
 	return nil
 }
