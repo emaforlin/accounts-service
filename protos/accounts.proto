@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package grpc.account.types;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "handlers/grpc";
+
+service Accounts {
+    rpc GetAccountDetails(GetAccountDetailsRequest) returns (GetAccountDetailsResponse);
+    rpc AddPersonAccount(AddPersonAccountRequest) returns (GenericResponse);
+}
+
+message AddPersonAccountRequest {
+    string username = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string phone_number = 4;
+    string email = 5;
+    string password = 6;
+}
+
+message GetAccountDetailsRequest {
+    oneof identifiers {
+        string username = 1;
+        string email = 2;
+        string phone_number = 3;
+    }
+}
+
+message GetAccountDetailsResponse {
+    uint32 id = 1;
+    string username = 2;
+    string email = 3;
+    string phone_number = 4;
+    string role = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+    google.protobuf.Timestamp deleted_at = 8;
+
+}
+
+message GenericResponse {
+    string message = 1;
+}

@@ -16,13 +16,10 @@ func main() {
 	conf := config.LoadConfig()
 	db := database.NewMySQLDatabase(conf)
 	fmt.Printf("Time: %s", time.Now().Format(time.DateTime))
-	go server.NewRPCServer(hclog.FromStandardLogger(log.Default(), &hclog.LoggerOptions{
+	server.NewRPCServer(hclog.FromStandardLogger(log.Default(), &hclog.LoggerOptions{
 		Name:       "GRPC",
 		Level:      hclog.Info,
 		JSONFormat: true,
 		TimeFormat: time.RFC3339,
 	}), conf, db).Start()
-	go server.NewEchoServer(conf, db).Start()
-
-	select {}
 }

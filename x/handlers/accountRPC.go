@@ -3,7 +3,7 @@ package handlers
 import (
 	"context"
 
-	protos "github.com/emaforlin/accounts-service/protos/gen/grpc/protos"
+	protos "github.com/emaforlin/accounts-service/x/handlers/grpc"
 	"github.com/emaforlin/accounts-service/x/models"
 	"github.com/emaforlin/accounts-service/x/usecases"
 	"github.com/hashicorp/go-hclog"
@@ -12,12 +12,12 @@ import (
 
 type accountServerImpl struct {
 	protos.UnimplementedAccountsServer
-	log            hclog.Logger
-	accountUsecase usecases.AccountUsecase
+	log     hclog.Logger
+	usecase usecases.AccountUsecase
 }
 
-func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.AccountDetailsRequest) (*protos.AccountDetailsResponse, error) {
-	found, err := h.accountUsecase.GetAccountDetails(&models.GetAccountData{
+func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.GetAccountDetailsRequest) (*protos.GetAccountDetailsResponse, error) {
+	found, err := h.usecase.GetAccountDetails(&models.GetAccountData{
 		Username:    ar.GetUsername(),
 		Email:       ar.GetEmail(),
 		PhoneNumber: ar.GetPhoneNumber(),
@@ -29,7 +29,7 @@ func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.Ac
 	}
 	h.log.Info("Handle Get User")
 
-	return &protos.AccountDetailsResponse{
+	return &protos.GetAccountDetailsResponse{
 		Id:          found.ID,
 		Username:    found.Username,
 		Email:       found.Email,
@@ -42,7 +42,7 @@ func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.Ac
 
 func NewAccountGRPCHandler(l hclog.Logger, u usecases.AccountUsecase) *accountServerImpl {
 	return &accountServerImpl{
-		log:            l,
-		accountUsecase: u,
+		log:     l,
+		usecase: u,
 	}
 }

@@ -7,10 +7,11 @@ import (
 
 	"github.com/emaforlin/accounts-service/config"
 	"github.com/emaforlin/accounts-service/database"
-	"github.com/emaforlin/accounts-service/protos/gen/grpc/protos"
 	"github.com/emaforlin/accounts-service/x/handlers"
+	protos "github.com/emaforlin/accounts-service/x/handlers/grpc"
 	"github.com/emaforlin/accounts-service/x/repositories"
 	"github.com/emaforlin/accounts-service/x/usecases"
+
 	"github.com/hashicorp/go-hclog"
 	"google.golang.org/grpc"
 )

@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: account.proto
+// source: accounts.proto
 
-package protos
+package grpc
 
 import (
 	context "context"
@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountsClient interface {
-	GetAccountDetails(ctx context.Context, in *AccountDetailsRequest, opts ...grpc.CallOption) (*AccountDetailsResponse, error)
+	GetAccountDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetAccountDetailsResponse, error)
 }
 
 type accountsClient struct {
@@ -33,9 +33,9 @@ func NewAccountsClient(cc grpc.ClientConnInterface) AccountsClient {
 	return &accountsClient{cc}
 }
 
-func (c *accountsClient) GetAccountDetails(ctx context.Context, in *AccountDetailsRequest, opts ...grpc.CallOption) (*AccountDetailsResponse, error) {
-	out := new(AccountDetailsResponse)
-	err := c.cc.Invoke(ctx, "/grpc.account.Accounts/GetAccountDetails", in, out, opts...)
+func (c *accountsClient) GetAccountDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetAccountDetailsResponse, error) {
+	out := new(GetAccountDetailsResponse)
+	err := c.cc.Invoke(ctx, "/grpc.account.types.Accounts/GetAccountDetails", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *accountsClient) GetAccountDetails(ctx context.Context, in *AccountDetai
 // All implementations must embed UnimplementedAccountsServer
 // for forward compatibility
 type AccountsServer interface {
-	GetAccountDetails(context.Context, *AccountDetailsRequest) (*AccountDetailsResponse, error)
+	GetAccountDetails(context.Context, *GetAccountDetailsRequest) (*GetAccountDetailsResponse, error)
 	mustEmbedUnimplementedAccountsServer()
 }
 
@@ -54,7 +54,7 @@ type AccountsServer interface {
 type UnimplementedAccountsServer struct {
 }
 
-func (UnimplementedAccountsServer) GetAccountDetails(context.Context, *AccountDetailsRequest) (*AccountDetailsResponse, error) {
+func (UnimplementedAccountsServer) GetAccountDetails(context.Context, *GetAccountDetailsRequest) (*GetAccountDetailsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccountDetails not implemented")
 }
 func (UnimplementedAccountsServer) mustEmbedUnimplementedAccountsServer() {}
@@ -71,7 +71,7 @@ func RegisterAccountsServer(s grpc.ServiceRegistrar, srv AccountsServer) {
 }
 
 func _Accounts_GetAccountDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountDetailsRequest)
+	in := new(GetAccountDetailsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -80,10 +80,10 @@ func _Accounts_GetAccountDetails_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/grpc.account.Accounts/GetAccountDetails",
+		FullMethod: "/grpc.account.types.Accounts/GetAccountDetails",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountsServer).GetAccountDetails(ctx, req.(*AccountDetailsRequest))
+		return srv.(AccountsServer).GetAccountDetails(ctx, req.(*GetAccountDetailsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -92,7 +92,7 @@ func _Accounts_GetAccountDetails_Handler(srv interface{}, ctx context.Context, d
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Accounts_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "grpc.account.Accounts",
+	ServiceName: "grpc.account.types.Accounts",
 	HandlerType: (*AccountsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -101,5 +101,5 @@ var Accounts_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "account.proto",
+	Metadata: "accounts.proto",
 }
