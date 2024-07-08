@@ -10,11 +10,6 @@ type accountsMysqlRepositoryImpl struct {
 	db database.Database
 }
 
-// DeleteAccount implements AccountsRepository.
-func (u *accountsMysqlRepositoryImpl) DeleteAccount(in *entities.GetUserDto) error {
-	panic("unimplemented")
-}
-
 func (u *accountsMysqlRepositoryImpl) InsertFoodPlace(in *entities.InsertFoodPlaceDto) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(in.User.Password), bcrypt.DefaultCost)
 	if err != nil {

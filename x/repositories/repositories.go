@@ -4,7 +4,6 @@ import "github.com/emaforlin/accounts-service/x/entities"
 
 type AccountsRepository interface {
 	SelectUser(in *entities.GetUserDto) (*entities.User, error)
-	DeleteUser(in *entities.GetUserDto) error
 
 	SelectPerson(in *entities.GetPersonDto) (*entities.Person, error)
 	InsertPerson(in *entities.InsertPersonDto) error
