@@ -44,12 +44,19 @@ func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.Add
 }
 
 func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.GetAccountDetailsRequest) (*protos.GetAccountDetailsResponse, error) {
-	found, err := h.usecase.GetAccountDetails(&models.GetAccountData{
+	input := &models.GetAccountData{
 		Username:    ar.GetUsername(),
 		Email:       ar.GetEmail(),
 		PhoneNumber: ar.GetPhoneNumber(),
-	})
+	}
 
+	// validate fields
+	if err := h.validate.Struct(input); err != nil {
+		h.log.Error("invalid input data", err.Error())
+		return nil, err
+	}
+
+	found, err := h.usecase.GetAccountDetails(input)
 	if err != nil {
 		h.log.Error("cannot find user", err)
 		return nil, err
