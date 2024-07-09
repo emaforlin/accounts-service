@@ -2,6 +2,8 @@
 config.yaml
 misc/
 
+# lock files
+*.lock
 # temp files
 
 **/*tmp*

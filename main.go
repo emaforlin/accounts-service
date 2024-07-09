@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -15,7 +14,6 @@ func main() {
 	config.InitViper("config.yaml")
 	conf := config.LoadConfig()
 	db := database.NewMySQLDatabase(conf)
-	fmt.Printf("Time: %s", time.Now().Format(time.DateTime))
 	server.NewRPCServer(hclog.FromStandardLogger(log.Default(), &hclog.LoggerOptions{
 		Name:       "GRPC",
 		Level:      hclog.Info,

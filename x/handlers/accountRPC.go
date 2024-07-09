@@ -3,17 +3,44 @@ package handlers
 import (
 	"context"
 
-	protos "github.com/emaforlin/accounts-service/x/handlers/grpc"
+	protos "github.com/emaforlin/accounts-service/x/handlers/grpc/protos"
 	"github.com/emaforlin/accounts-service/x/models"
 	"github.com/emaforlin/accounts-service/x/usecases"
-	"github.com/hashicorp/go-hclog"
+	"github.com/go-playground/validator/v10"
+	hclog "github.com/hashicorp/go-hclog"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type accountServerImpl struct {
 	protos.UnimplementedAccountsServer
-	log     hclog.Logger
-	usecase usecases.AccountUsecase
+	log      hclog.Logger
+	usecase  usecases.AccountUsecase
+	validate *validator.Validate
+}
+
+func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.AddPersonAccountRequest) (*protos.GenericResponse, error) {
+	input := &models.AddPersonAccountData{
+		Username:    pr.GetUsername(),
+		FirstName:   pr.GetFirstName(),
+		LastName:    pr.GetLastName(),
+		PhoneNumber: pr.GetPhoneNumber(),
+		Email:       pr.GetEmail(),
+		Password:    pr.GetPassword(),
+	}
+	// validate fields
+	if err := h.validate.Struct(input); err != nil {
+		h.log.Error("invalid input data", err.Error())
+		return nil, err
+	}
+
+	if err := h.usecase.AddPersonAccount(input); err != nil {
+		return nil, err
+	}
+
+	h.log.Info("Handle Create person account")
+	return &protos.GenericResponse{
+		Message: "Account successfully created",
+	}, nil
 }
 
 func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.GetAccountDetailsRequest) (*protos.GetAccountDetailsResponse, error) {
@@ -42,7 +69,8 @@ func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.Ge
 
 func NewAccountGRPCHandler(l hclog.Logger, u usecases.AccountUsecase) *accountServerImpl {
 	return &accountServerImpl{
-		log:     l,
-		usecase: u,
+		log:      l,
+		usecase:  u,
+		validate: validator.New(),
 	}
 }

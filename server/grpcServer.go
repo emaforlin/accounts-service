@@ -8,12 +8,12 @@ import (
 	"github.com/emaforlin/accounts-service/config"
 	"github.com/emaforlin/accounts-service/database"
 	"github.com/emaforlin/accounts-service/x/handlers"
-	protos "github.com/emaforlin/accounts-service/x/handlers/grpc"
+	protos "github.com/emaforlin/accounts-service/x/handlers/grpc/protos"
 	"github.com/emaforlin/accounts-service/x/repositories"
 	"github.com/emaforlin/accounts-service/x/usecases"
-
 	"github.com/hashicorp/go-hclog"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type rpcServer struct {
@@ -26,13 +26,13 @@ type rpcServer struct {
 func (r *rpcServer) Start() {
 	r.initializeHttpHandlers()
 
-	l, err := net.Listen("tcp", fmt.Sprintf(":%d", r.cfg.App.Ports["rpc"]))
-
+	l, err := net.Listen("tcp", fmt.Sprintf(":%d", r.cfg.App.Port))
 	if err != nil {
 		r.log.Error("Unable to listen", "error", err)
 		os.Exit(1)
 	}
-	r.log.Info("Listening...", r.gs.Serve(l))
+	r.log.Info("Listening...")
+	r.gs.Serve(l)
 }
 
 func (r *rpcServer) initializeHttpHandlers() {
@@ -40,7 +40,7 @@ func (r *rpcServer) initializeHttpHandlers() {
 	usecase := usecases.NewAccountUsecaseImpl(repository)
 
 	ah := handlers.NewAccountGRPCHandler(r.log, usecase)
-
+	reflection.Register(r.gs)
 	protos.RegisterAccountsServer(r.gs, ah)
 }
 
