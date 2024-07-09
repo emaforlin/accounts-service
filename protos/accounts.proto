@@ -1,10 +1,9 @@
 syntax = "proto3";
 
-package grpc.account.types;
+package accounts.v1;
 
 import "google/protobuf/timestamp.proto";
-
-option go_package = "handlers/grpc";
+import "buf/validate/validate.proto";
 
 service Accounts {
     rpc GetAccountDetails(GetAccountDetailsRequest) returns (GetAccountDetailsResponse);
@@ -12,19 +11,19 @@ service Accounts {
 }
 
 message AddPersonAccountRequest {
-    string username = 1;
-    string first_name = 2;
-    string last_name = 3;
-    string phone_number = 4;
-    string email = 5;
-    string password = 6;
+    string username = 1 [(buf.validate.field).string = {min_len: 4, max_len: 30}];
+    string first_name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 40}];
+    string last_name = 3 [(buf.validate.field).string = {min_len: 4, max_len: 80}];
+    string phone_number = 4 [(buf.validate.field).string = {min_len: 3, max_len: 15}];
+    string email = 5 [(buf.validate.field).string = {min_len: 5,max_len: 256}];
+    string password = 6 [(buf.validate.field).string = {min_len: 8, max_len: 64}];
 }
 
 message GetAccountDetailsRequest {
     oneof identifiers {
-        string username = 1;
-        string email = 2;
-        string phone_number = 3;
+        string username = 1 [(buf.validate.field).string = {min_len: 4, max_len: 30}];
+        string email = 2 [(buf.validate.field).string = {min_len: 5,max_len: 256}];
+        string phone_number = 3 [(buf.validate.field).string = {min_len: 3, max_len: 15}];
     }
 }
 
