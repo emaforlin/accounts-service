@@ -8,4 +8,5 @@ import (
 type AccountUsecase interface {
 	GetAccountDetails(in *models.GetAccountData) (*entities.User, error)
 	AddPersonAccount(in *models.AddPersonAccountData) error
+	AddFoodPlaceAccount(in *models.AddFoodPlaceAccountData) error
 }

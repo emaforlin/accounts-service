@@ -13,6 +13,37 @@ type accountUsecaseImpl struct {
 	repository repositories.AccountsRepository
 }
 
+func (u *accountUsecaseImpl) AddFoodPlaceAccount(in *models.AddFoodPlaceAccountData) error {
+	_, err := u.repository.SelectUser(&entities.GetUserDto{
+		Username:    in.Username,
+		Email:       in.Email,
+		PhoneNumber: in.PhoneNumber,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	dto := entities.InsertFoodPlaceDto{
+		BusinessName: in.BusinessName,
+		Location:     in.Location,
+		User: entities.InsertUserDto{
+			Role:        "FoodPlace",
+			Username:    in.Username,
+			Email:       in.Email,
+			PhoneNumber: in.PhoneNumber,
+			Password:    in.Password,
+		},
+	}
+	err = u.repository.InsertFoodPlace(&dto)
+	if err != nil {
+		log.Err(err)
+		return fmt.Errorf("error creating account")
+	}
+
+	return nil
+}
+
 func (u *accountUsecaseImpl) AddPersonAccount(in *models.AddPersonAccountData) error {
 	_, err := u.repository.SelectUser(&entities.GetUserDto{
 		Username:    in.Username,

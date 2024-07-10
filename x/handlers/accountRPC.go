@@ -8,6 +8,7 @@ import (
 	"github.com/emaforlin/accounts-service/x/usecases"
 	"github.com/go-playground/validator/v10"
 	hclog "github.com/hashicorp/go-hclog"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -18,7 +19,31 @@ type accountServerImpl struct {
 	validate *validator.Validate
 }
 
-func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.AddPersonAccountRequest) (*protos.GenericResponse, error) {
+func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos.AddFoodPlaceAccountRequest) (*emptypb.Empty, error) {
+	input := &models.AddFoodPlaceAccountData{
+		Username:     fpr.GetUsername(),
+		PhoneNumber:  fpr.GetPhoneNumber(),
+		Email:        fpr.GetEmail(),
+		Password:     fpr.GetPassword(),
+		BusinessName: fpr.GetBusinessName(),
+		Location:     fpr.GetLocation(),
+		Tags:         fpr.GetTags(),
+	}
+	// validate fields
+	if err := h.validate.Struct(input); err != nil {
+		h.log.Error("invalid input data", err.Error())
+		return nil, err
+	}
+
+	h.log.Info("Handle Create food place account")
+	if err := h.usecase.AddFoodPlaceAccount(input); err != nil {
+		h.log.Error("error creating account")
+		return nil, err
+	}
+	return &emptypb.Empty{}, nil
+}
+
+func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.AddPersonAccountRequest) (*emptypb.Empty, error) {
 	input := &models.AddPersonAccountData{
 		Username:    pr.GetUsername(),
 		FirstName:   pr.GetFirstName(),
@@ -33,14 +58,13 @@ func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.Add
 		return nil, err
 	}
 
+	h.log.Info("Handle Create person account")
 	if err := h.usecase.AddPersonAccount(input); err != nil {
+		h.log.Error("error creating account", err.Error())
 		return nil, err
 	}
 
-	h.log.Info("Handle Create person account")
-	return &protos.GenericResponse{
-		Message: "Account successfully created",
-	}, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.GetAccountDetailsRequest) (*protos.GetAccountDetailsResponse, error) {
@@ -74,7 +98,7 @@ func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.Ge
 	}, nil
 }
 
-func NewAccountGRPCHandler(l hclog.Logger, u usecases.AccountUsecase) *accountServerImpl {
+func NewAccountGRPCHandler(l hclog.Logger, u usecases.AccountUsecase) protos.AccountsServer {
 	return &accountServerImpl{
 		log:      l,
 		usecase:  u,
