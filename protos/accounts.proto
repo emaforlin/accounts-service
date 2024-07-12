@@ -7,10 +7,17 @@ import "google/protobuf/empty.proto";
 
 
 service Accounts {
+    rpc VerifyFoodPlaceAccount(VerifyFoodPlaceAccountRequest) returns (VerifyFoodPlaceAccountResponse);
     rpc AddFoodPlaceAccount(AddFoodPlaceAccountRequest) returns (google.protobuf.Empty);
     rpc GetAccountDetails(GetAccountDetailsRequest) returns (GetAccountDetailsResponse);
     rpc AddPersonAccount(AddPersonAccountRequest) returns (google.protobuf.Empty);
 }
+
+message VerifyFoodPlaceAccountRequest {
+    uint32 userid = 1;
+}
+
+message VerifyFoodPlaceAccountResponse {}
 
 message AddFoodPlaceAccountRequest {
     string username = 1;

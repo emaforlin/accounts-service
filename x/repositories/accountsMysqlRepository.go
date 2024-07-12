@@ -34,7 +34,8 @@ func (u *accountsMysqlRepositoryImpl) SelectFoodPlace(in *entities.GetFoodPlaceD
 }
 
 func (u *accountsMysqlRepositoryImpl) UpdateFoodPlace(userId uint32, in *entities.InsertFoodPlaceDto) error {
-	response := u.db.GetDb().Where("user_id = ?", userId).Updates(in)
+	response := u.db.GetDb().Model(&entities.InsertFoodPlaceDto{}).Where("user_id = ?", userId).Updates(in)
+
 	if response.Error != nil {
 		return response.Error
 	}

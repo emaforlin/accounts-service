@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/emaforlin/accounts-service/x/entities"
@@ -11,6 +12,14 @@ import (
 
 type accountUsecaseImpl struct {
 	repository repositories.AccountsRepository
+}
+
+func (u *accountUsecaseImpl) VerifyFoodPlaceAccount(in *models.VerifyFoodPlaceAccount) error {
+	err := u.repository.UpdateFoodPlace(in.UserId, &entities.InsertFoodPlaceDto{Verified: true})
+	if err != nil {
+		return errors.New("account could not be verified")
+	}
+	return nil
 }
 
 func (u *accountUsecaseImpl) AddFoodPlaceAccount(in *models.AddFoodPlaceAccountData) error {

@@ -5,7 +5,7 @@ managed:
     - file_option: go_package_prefix
       value: grpc
 plugins:
-  - local: protoc-gen-go
+  - remote: buf.build/protocolbuffers/go
     out: x/handlers
-  - local: protoc-gen-go-grpc
+  - remote: buf.build/grpc/go
     out: x/handlers

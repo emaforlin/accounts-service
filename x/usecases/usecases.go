@@ -6,7 +6,8 @@ import (
 )
 
 type AccountUsecase interface {
-	GetAccountDetails(in *models.GetAccountData) (*entities.User, error)
-	AddPersonAccount(in *models.AddPersonAccountData) error
+	VerifyFoodPlaceAccount(in *models.VerifyFoodPlaceAccount) error
 	AddFoodPlaceAccount(in *models.AddFoodPlaceAccountData) error
+	AddPersonAccount(in *models.AddPersonAccountData) error
+	GetAccountDetails(in *models.GetAccountData) (*entities.User, error)
 }

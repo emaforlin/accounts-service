@@ -2,12 +2,12 @@ package entities
 
 type (
 	InsertFoodPlaceDto struct {
-		FoodPlaceId  uint32        `gorm:"primaryKey;autoIncrement" json:"food_place_id"`
-		UserId       uint32        `gorm:"not null;unique" json:"user_id"`
-		BusinessName string        `gorm:"not null" json:"business_name"`
-		Location     string        `gorm:"not null;unique" json:"location"`
-		Tags         []string      `gorm:"not null" json:"tags"`
-		User         InsertUserDto `gorm:"foreignKey:UserId"`
+		UserId       uint32 `gorm:"not null;unique" json:"user_id"`
+		BusinessName string `gorm:"not null" json:"business_name"`
+		Location     string `gorm:"not null;unique" json:"location"`
+		Verified     bool   `gorm:"not null;default:false" json:"verified"`
+		// Tags         []string      `gorm:"not null" json:"tags"`
+		User InsertUserDto `gorm:"foreignKey:UserId"`
 	}
 
 	GetFoodPlaceDto struct {
@@ -15,11 +15,11 @@ type (
 	}
 
 	FoodPlace struct {
-		UserId       uint32   `json:"user_id"`
-		BusinessName string   `json:"business_name"`
-		Location     string   `json:"location"`
-		Tags         []string `json:"tags"`
-		Verified     bool     `json:"verified"`
+		UserId       uint32 `json:"user_id"`
+		BusinessName string `json:"business_name"`
+		Location     string `json:"location"`
+		Verified     bool   `json:"verified"`
+		// Tags         []string `json:"tags"`
 	}
 )
 

@@ -19,6 +19,25 @@ type accountServerImpl struct {
 	validate *validator.Validate
 }
 
+func (h *accountServerImpl) VerifyFoodPlaceAccount(ctx context.Context, fp *protos.VerifyFoodPlaceAccountRequest) (*protos.VerifyFoodPlaceAccountResponse, error) {
+	input := models.VerifyFoodPlaceAccount{
+		UserId: fp.GetUserid(),
+	}
+	// validate fields
+	if err := h.validate.Struct(input); err != nil {
+		h.log.Error("invalid input data", err.Error())
+		return nil, err
+	}
+
+	h.log.Info("Handle: Verify food place account ")
+
+	if err := h.usecase.VerifyFoodPlaceAccount(&input); err != nil {
+		return nil, err
+	}
+
+	return &protos.VerifyFoodPlaceAccountResponse{}, nil
+}
+
 func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos.AddFoodPlaceAccountRequest) (*emptypb.Empty, error) {
 	input := &models.AddFoodPlaceAccountData{
 		Username:     fpr.GetUsername(),
@@ -35,7 +54,7 @@ func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos
 		return nil, err
 	}
 
-	h.log.Info("Handle Create food place account")
+	h.log.Info("Handle: Create food place account")
 	if err := h.usecase.AddFoodPlaceAccount(input); err != nil {
 		h.log.Error("error creating account")
 		return nil, err
@@ -58,7 +77,7 @@ func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.Add
 		return nil, err
 	}
 
-	h.log.Info("Handle Create person account")
+	h.log.Info("Handle: Create person account")
 	if err := h.usecase.AddPersonAccount(input); err != nil {
 		h.log.Error("error creating account", err.Error())
 		return nil, err
@@ -85,7 +104,7 @@ func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.Ge
 		h.log.Error("cannot find user", err)
 		return nil, err
 	}
-	h.log.Info("Handle Get User")
+	h.log.Info("Handle: Get User")
 
 	return &protos.GetAccountDetailsResponse{
 		Id:          found.ID,
