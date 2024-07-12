@@ -6,27 +6,19 @@ import (
 	protos "github.com/emaforlin/accounts-service/x/handlers/grpc/protos"
 	"github.com/emaforlin/accounts-service/x/models"
 	"github.com/emaforlin/accounts-service/x/usecases"
-	"github.com/go-playground/validator/v10"
 	hclog "github.com/hashicorp/go-hclog"
-	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type accountServerImpl struct {
 	protos.UnimplementedAccountsServer
-	log      hclog.Logger
-	usecase  usecases.AccountUsecase
-	validate *validator.Validate
+	log     hclog.Logger
+	usecase usecases.AccountUsecase
 }
 
 func (h *accountServerImpl) VerifyFoodPlaceAccount(ctx context.Context, fp *protos.VerifyFoodPlaceAccountRequest) (*protos.VerifyFoodPlaceAccountResponse, error) {
 	input := models.VerifyFoodPlaceAccount{
 		UserId: fp.GetUserid(),
-	}
-	// validate fields
-	if err := h.validate.Struct(input); err != nil {
-		h.log.Error("invalid input data", err.Error())
-		return nil, err
 	}
 
 	h.log.Info("Handle: Verify food place account ")
@@ -38,7 +30,7 @@ func (h *accountServerImpl) VerifyFoodPlaceAccount(ctx context.Context, fp *prot
 	return &protos.VerifyFoodPlaceAccountResponse{}, nil
 }
 
-func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos.AddFoodPlaceAccountRequest) (*emptypb.Empty, error) {
+func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos.AddFoodPlaceAccountRequest) (*protos.AddFoodPlaceAccountResponse, error) {
 	input := &models.AddFoodPlaceAccountData{
 		Username:     fpr.GetUsername(),
 		PhoneNumber:  fpr.GetPhoneNumber(),
@@ -48,21 +40,17 @@ func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos
 		Location:     fpr.GetLocation(),
 		Tags:         fpr.GetTags(),
 	}
-	// validate fields
-	if err := h.validate.Struct(input); err != nil {
-		h.log.Error("invalid input data", err.Error())
-		return nil, err
-	}
 
 	h.log.Info("Handle: Create food place account")
+
 	if err := h.usecase.AddFoodPlaceAccount(input); err != nil {
 		h.log.Error("error creating account")
 		return nil, err
 	}
-	return &emptypb.Empty{}, nil
+	return &protos.AddFoodPlaceAccountResponse{}, nil
 }
 
-func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.AddPersonAccountRequest) (*emptypb.Empty, error) {
+func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.AddPersonAccountRequest) (*protos.AddPersonAccountResponse, error) {
 	input := &models.AddPersonAccountData{
 		Username:    pr.GetUsername(),
 		FirstName:   pr.GetFirstName(),
@@ -71,19 +59,15 @@ func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.Add
 		Email:       pr.GetEmail(),
 		Password:    pr.GetPassword(),
 	}
-	// validate fields
-	if err := h.validate.Struct(input); err != nil {
-		h.log.Error("invalid input data", err.Error())
-		return nil, err
-	}
 
 	h.log.Info("Handle: Create person account")
+
 	if err := h.usecase.AddPersonAccount(input); err != nil {
 		h.log.Error("error creating account", err.Error())
 		return nil, err
 	}
 
-	return &emptypb.Empty{}, nil
+	return &protos.AddPersonAccountResponse{}, nil
 }
 
 func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.GetAccountDetailsRequest) (*protos.GetAccountDetailsResponse, error) {
@@ -93,18 +77,13 @@ func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.Ge
 		PhoneNumber: ar.GetPhoneNumber(),
 	}
 
-	// validate fields
-	if err := h.validate.Struct(input); err != nil {
-		h.log.Error("invalid input data", err.Error())
-		return nil, err
-	}
+	h.log.Info("Handle: Get User")
 
 	found, err := h.usecase.GetAccountDetails(input)
 	if err != nil {
 		h.log.Error("cannot find user", err)
 		return nil, err
 	}
-	h.log.Info("Handle: Get User")
 
 	return &protos.GetAccountDetailsResponse{
 		Id:          found.ID,
@@ -119,8 +98,7 @@ func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.Ge
 
 func NewAccountGRPCHandler(l hclog.Logger, u usecases.AccountUsecase) protos.AccountsServer {
 	return &accountServerImpl{
-		log:      l,
-		usecase:  u,
-		validate: validator.New(),
+		log:     l,
+		usecase: u,
 	}
 }

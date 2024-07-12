@@ -7,6 +7,7 @@ import (
 
 	"github.com/emaforlin/accounts-service/config"
 	"github.com/emaforlin/accounts-service/database"
+	"github.com/emaforlin/accounts-service/interceptors"
 	"github.com/emaforlin/accounts-service/x/handlers"
 	protos "github.com/emaforlin/accounts-service/x/handlers/grpc/protos"
 	"github.com/emaforlin/accounts-service/x/repositories"
@@ -49,6 +50,6 @@ func NewRPCServer(l hclog.Logger, c *config.Config, db database.Database) Server
 		log: l,
 		cfg: c,
 		db:  db,
-		gs:  grpc.NewServer(),
+		gs:  grpc.NewServer(grpc.UnaryInterceptor(interceptors.Validation)),
 	}
 }

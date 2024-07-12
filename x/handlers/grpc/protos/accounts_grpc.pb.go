@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -31,9 +30,9 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountsClient interface {
 	VerifyFoodPlaceAccount(ctx context.Context, in *VerifyFoodPlaceAccountRequest, opts ...grpc.CallOption) (*VerifyFoodPlaceAccountResponse, error)
-	AddFoodPlaceAccount(ctx context.Context, in *AddFoodPlaceAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AddFoodPlaceAccount(ctx context.Context, in *AddFoodPlaceAccountRequest, opts ...grpc.CallOption) (*AddFoodPlaceAccountResponse, error)
 	GetAccountDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetAccountDetailsResponse, error)
-	AddPersonAccount(ctx context.Context, in *AddPersonAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AddPersonAccount(ctx context.Context, in *AddPersonAccountRequest, opts ...grpc.CallOption) (*AddPersonAccountResponse, error)
 }
 
 type accountsClient struct {
@@ -54,9 +53,9 @@ func (c *accountsClient) VerifyFoodPlaceAccount(ctx context.Context, in *VerifyF
 	return out, nil
 }
 
-func (c *accountsClient) AddFoodPlaceAccount(ctx context.Context, in *AddFoodPlaceAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *accountsClient) AddFoodPlaceAccount(ctx context.Context, in *AddFoodPlaceAccountRequest, opts ...grpc.CallOption) (*AddFoodPlaceAccountResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(AddFoodPlaceAccountResponse)
 	err := c.cc.Invoke(ctx, Accounts_AddFoodPlaceAccount_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -74,9 +73,9 @@ func (c *accountsClient) GetAccountDetails(ctx context.Context, in *GetAccountDe
 	return out, nil
 }
 
-func (c *accountsClient) AddPersonAccount(ctx context.Context, in *AddPersonAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *accountsClient) AddPersonAccount(ctx context.Context, in *AddPersonAccountRequest, opts ...grpc.CallOption) (*AddPersonAccountResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(AddPersonAccountResponse)
 	err := c.cc.Invoke(ctx, Accounts_AddPersonAccount_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -89,9 +88,9 @@ func (c *accountsClient) AddPersonAccount(ctx context.Context, in *AddPersonAcco
 // for forward compatibility
 type AccountsServer interface {
 	VerifyFoodPlaceAccount(context.Context, *VerifyFoodPlaceAccountRequest) (*VerifyFoodPlaceAccountResponse, error)
-	AddFoodPlaceAccount(context.Context, *AddFoodPlaceAccountRequest) (*emptypb.Empty, error)
+	AddFoodPlaceAccount(context.Context, *AddFoodPlaceAccountRequest) (*AddFoodPlaceAccountResponse, error)
 	GetAccountDetails(context.Context, *GetAccountDetailsRequest) (*GetAccountDetailsResponse, error)
-	AddPersonAccount(context.Context, *AddPersonAccountRequest) (*emptypb.Empty, error)
+	AddPersonAccount(context.Context, *AddPersonAccountRequest) (*AddPersonAccountResponse, error)
 	mustEmbedUnimplementedAccountsServer()
 }
 
@@ -102,13 +101,13 @@ type UnimplementedAccountsServer struct {
 func (UnimplementedAccountsServer) VerifyFoodPlaceAccount(context.Context, *VerifyFoodPlaceAccountRequest) (*VerifyFoodPlaceAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyFoodPlaceAccount not implemented")
 }
-func (UnimplementedAccountsServer) AddFoodPlaceAccount(context.Context, *AddFoodPlaceAccountRequest) (*emptypb.Empty, error) {
+func (UnimplementedAccountsServer) AddFoodPlaceAccount(context.Context, *AddFoodPlaceAccountRequest) (*AddFoodPlaceAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddFoodPlaceAccount not implemented")
 }
 func (UnimplementedAccountsServer) GetAccountDetails(context.Context, *GetAccountDetailsRequest) (*GetAccountDetailsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccountDetails not implemented")
 }
-func (UnimplementedAccountsServer) AddPersonAccount(context.Context, *AddPersonAccountRequest) (*emptypb.Empty, error) {
+func (UnimplementedAccountsServer) AddPersonAccount(context.Context, *AddPersonAccountRequest) (*AddPersonAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddPersonAccount not implemented")
 }
 func (UnimplementedAccountsServer) mustEmbedUnimplementedAccountsServer() {}

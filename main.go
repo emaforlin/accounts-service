@@ -17,7 +17,6 @@ func main() {
 	server.NewRPCServer(hclog.FromStandardLogger(log.Default(), &hclog.LoggerOptions{
 		Name:       "GRPC",
 		Level:      hclog.Info,
-		JSONFormat: true,
 		TimeFormat: time.RFC3339,
 	}), conf, db).Start()
 }
