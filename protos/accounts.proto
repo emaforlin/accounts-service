@@ -3,14 +3,13 @@ syntax = "proto3";
 package accounts.v1.accounts;
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 
 service Accounts {
     rpc VerifyFoodPlaceAccount(VerifyFoodPlaceAccountRequest) returns (VerifyFoodPlaceAccountResponse);
-    rpc AddFoodPlaceAccount(AddFoodPlaceAccountRequest) returns (google.protobuf.Empty);
+    rpc AddFoodPlaceAccount(AddFoodPlaceAccountRequest) returns (AddFoodPlaceAccountResponse);
     rpc GetAccountDetails(GetAccountDetailsRequest) returns (GetAccountDetailsResponse);
-    rpc AddPersonAccount(AddPersonAccountRequest) returns (google.protobuf.Empty);
+    rpc AddPersonAccount(AddPersonAccountRequest) returns (AddPersonAccountResponse);
 }
 
 message VerifyFoodPlaceAccountRequest {
@@ -29,6 +28,8 @@ message AddFoodPlaceAccountRequest {
     repeated string tags = 7;
 }
 
+message AddFoodPlaceAccountResponse {}
+
 message AddPersonAccountRequest {
     string username = 1;
     string first_name = 2;
@@ -37,6 +38,8 @@ message AddPersonAccountRequest {
     string email = 5;
     string password = 6;
 }
+
+message AddPersonAccountResponse {}
 
 message GetAccountDetailsRequest {
     oneof identifiers {
