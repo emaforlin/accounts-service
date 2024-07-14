@@ -17,11 +17,11 @@ type accountServerImpl struct {
 }
 
 func (h *accountServerImpl) VerifyFoodPlaceAccount(ctx context.Context, fp *protos.VerifyFoodPlaceAccountRequest) (*protos.VerifyFoodPlaceAccountResponse, error) {
+	h.log.Info("Handle: Verify food place account ")
+
 	input := models.VerifyFoodPlaceAccount{
 		UserId: fp.GetUserid(),
 	}
-
-	h.log.Info("Handle: Verify food place account ")
 
 	if err := h.usecase.VerifyFoodPlaceAccount(&input); err != nil {
 		return nil, err
@@ -31,6 +31,8 @@ func (h *accountServerImpl) VerifyFoodPlaceAccount(ctx context.Context, fp *prot
 }
 
 func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos.AddFoodPlaceAccountRequest) (*protos.AddFoodPlaceAccountResponse, error) {
+	h.log.Info("Handle: Create food place account")
+
 	input := &models.AddFoodPlaceAccountData{
 		Username:     fpr.GetUsername(),
 		PhoneNumber:  fpr.GetPhoneNumber(),
@@ -41,8 +43,6 @@ func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos
 		Tags:         fpr.GetTags(),
 	}
 
-	h.log.Info("Handle: Create food place account")
-
 	if err := h.usecase.AddFoodPlaceAccount(input); err != nil {
 		h.log.Error("error creating account")
 		return nil, err
@@ -51,6 +51,8 @@ func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos
 }
 
 func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.AddPersonAccountRequest) (*protos.AddPersonAccountResponse, error) {
+	h.log.Info("Handle: Create person account")
+
 	input := &models.AddPersonAccountData{
 		Username:    pr.GetUsername(),
 		FirstName:   pr.GetFirstName(),
@@ -59,8 +61,6 @@ func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.Add
 		Email:       pr.GetEmail(),
 		Password:    pr.GetPassword(),
 	}
-
-	h.log.Info("Handle: Create person account")
 
 	if err := h.usecase.AddPersonAccount(input); err != nil {
 		h.log.Error("error creating account", err.Error())
@@ -71,13 +71,13 @@ func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.Add
 }
 
 func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.GetAccountDetailsRequest) (*protos.GetAccountDetailsResponse, error) {
+	h.log.Info("Handle: Get User")
+
 	input := &models.GetAccountData{
 		Username:    ar.GetUsername(),
 		Email:       ar.GetEmail(),
 		PhoneNumber: ar.GetPhoneNumber(),
 	}
-
-	h.log.Info("Handle: Get User")
 
 	found, err := h.usecase.GetAccountDetails(input)
 	if err != nil {

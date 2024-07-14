@@ -10,11 +10,18 @@ import (
 )
 
 func main() {
-	config.InitViper("config.yaml")
-	conf := config.LoadConfig()
-	db := database.NewMySQLDatabase(conf)
-	server.NewRPCServer(hclog.FromStandardLogger(log.Default(), &hclog.LoggerOptions{
+	logger := hclog.FromStandardLogger(log.Default(), &hclog.LoggerOptions{
 		Name:  "accounts-service",
 		Level: hclog.Info,
-	}), conf, db).Start()
+	})
+
+	logger.Info("Load configurations")
+	config.InitViper("config.yaml")
+	conf := config.LoadConfig()
+
+	logger.Info("Connect to database")
+	db := database.NewMySQLDatabase(conf)
+
+	logger.Info("Setup server...")
+	server.NewRPCServer(logger, conf, db).Start()
 }

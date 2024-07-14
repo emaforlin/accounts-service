@@ -25,7 +25,6 @@ func Validation(ctx context.Context, req any, info *grpc.UnaryServerInfo, handle
 	if err := validate.Struct(mappedReq); err != nil {
 		if _, ok := err.(*validator.InvalidValidationError); ok {
 			return nil, status.Errorf(codes.InvalidArgument, "internal validation error: %v", err)
-
 		}
 		return nil, status.Errorf(codes.InvalidArgument, "validation error: %v", err)
 	}
