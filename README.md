@@ -4,7 +4,7 @@
 
 * **Config manager:** Simple setup using the `config.yaml` file.
 * **Input validation:** All RPC calls are validated by an interceptor.
-* ...
+* **Graceful stop:** Stop the server with `Crtl+C`
 
 ## Next stage
 

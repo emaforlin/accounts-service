@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"time"
 
 	"github.com/emaforlin/accounts-service/config"
 	"github.com/emaforlin/accounts-service/database"
@@ -15,8 +14,7 @@ func main() {
 	conf := config.LoadConfig()
 	db := database.NewMySQLDatabase(conf)
 	server.NewRPCServer(hclog.FromStandardLogger(log.Default(), &hclog.LoggerOptions{
-		Name:       "GRPC",
-		Level:      hclog.Info,
-		TimeFormat: time.RFC3339,
+		Name:  "accounts-service",
+		Level: hclog.Info,
 	}), conf, db).Start()
 }

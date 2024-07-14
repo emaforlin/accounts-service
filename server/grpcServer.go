@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/emaforlin/accounts-service/config"
 	"github.com/emaforlin/accounts-service/database"
@@ -27,21 +29,52 @@ type rpcServer struct {
 func (r *rpcServer) Start() {
 	r.initializeHttpHandlers()
 
+	// try to listen on the specified port
 	l, err := net.Listen("tcp", fmt.Sprintf(":%d", r.cfg.App.Port))
 	if err != nil {
-		r.log.Error("Unable to listen", "error", err)
+		r.log.Error(fmt.Sprintf("Unable to listen on %s", l.Addr().String()))
+		r.log.Debug(err.Error())
 		os.Exit(1)
 	}
-	r.log.Info("Listening...")
-	r.gs.Serve(l)
+
+	r.log.Info(fmt.Sprintf("Listening on %s", l.Addr().String()))
+
+	// channel to handle system signals
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+
+	// goroutine to server the RPC requests
+	go func() {
+		if err := r.gs.Serve(l); err != nil {
+			r.log.Error("Error serving")
+			r.log.Debug(err.Error())
+
+		}
+	}()
+
+	// wait for interruption signal
+	<-sigChan
+	r.log.Info("Shutting down server...")
+
+	// gracefully stop the grpc server
+	r.gs.GracefulStop()
+	r.log.Info("Server stopped gracefully")
 }
 
 func (r *rpcServer) initializeHttpHandlers() {
+	// create repository
 	repository := repositories.NewAccountMysqlRepositoryImpl(r.db)
+
+	// create usecase
 	usecase := usecases.NewAccountUsecaseImpl(repository)
 
+	// create handler
 	ah := handlers.NewAccountGRPCHandler(r.log, usecase)
+
+	// setup server reflection
 	reflection.Register(r.gs)
+
+	// register the server
 	protos.RegisterAccountsServer(r.gs, ah)
 }
 
