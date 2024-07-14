@@ -20,7 +20,7 @@ func main() {
 	conf := config.LoadConfig()
 
 	logger.Info("Connect to database")
-	db := database.NewMySQLDatabase(conf)
+	db := database.NewMySQLDatabase(conf, logger)
 
 	logger.Info("Setup server...")
 	server.NewRPCServer(logger, conf, db).Start()

@@ -24,6 +24,7 @@ func (h *accountServerImpl) VerifyFoodPlaceAccount(ctx context.Context, fp *prot
 	}
 
 	if err := h.usecase.VerifyFoodPlaceAccount(&input); err != nil {
+		h.log.Error("Account could not be verified")
 		return nil, err
 	}
 
@@ -44,7 +45,7 @@ func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos
 	}
 
 	if err := h.usecase.AddFoodPlaceAccount(input); err != nil {
-		h.log.Error("error creating account")
+		h.log.Error("Error creating account")
 		return nil, err
 	}
 	return &protos.AddFoodPlaceAccountResponse{}, nil
@@ -63,7 +64,7 @@ func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.Add
 	}
 
 	if err := h.usecase.AddPersonAccount(input); err != nil {
-		h.log.Error("error creating account", err.Error())
+		h.log.Error("Error creating account")
 		return nil, err
 	}
 
@@ -81,7 +82,7 @@ func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.Ge
 
 	found, err := h.usecase.GetAccountDetails(input)
 	if err != nil {
-		h.log.Error("cannot find user", err)
+		h.log.Error("Cannot find user")
 		return nil, err
 	}
 
