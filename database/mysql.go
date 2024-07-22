@@ -16,7 +16,7 @@ type mysqlDatabase struct {
 
 func NewMySQLDatabase(cfg *config.Config, l hclog.Logger) Database {
 	dblogger := logger.New(l.Named("database").StandardLogger(&hclog.StandardLoggerOptions{}), logger.Config{
-		LogLevel: logger.Silent,
+		LogLevel: logger.Error,
 	})
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", cfg.Db.User, cfg.Db.Passwd, cfg.Db.Host, cfg.Db.Name),
