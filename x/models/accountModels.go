@@ -1,6 +1,12 @@
 package models
 
 type (
+	GetUserId struct {
+		Username    string `validate:""`
+		Email       string `validate:""`
+		PhoneNumber string `validate:""`
+	}
+
 	VerifyFoodPlaceAccount struct {
 		UserId uint32 `validate:"required"`
 	}
@@ -15,9 +21,7 @@ type (
 	}
 
 	GetAccountData struct {
-		Username    string `validate:""`
-		Email       string `validate:""`
-		PhoneNumber string `validate:""`
+		Id uint32 `validate:"required"`
 	}
 
 	AddFoodPlaceAccountData struct {

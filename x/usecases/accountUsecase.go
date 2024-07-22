@@ -14,6 +14,19 @@ type accountUsecaseImpl struct {
 	repository repositories.AccountsRepository
 }
 
+func (u *accountUsecaseImpl) GetUserId(in *models.GetUserId) (int32, error) {
+	found, err := u.repository.SelectUser(&entities.GetUserDto{
+		Username:    in.Username,
+		Email:       in.Email,
+		PhoneNumber: in.PhoneNumber,
+	})
+	if err != nil {
+		log.Err(err)
+		return 0, errors.New("error user not found")
+	}
+	return int32(found.ID), nil
+}
+
 func (u *accountUsecaseImpl) VerifyFoodPlaceAccount(in *models.VerifyFoodPlaceAccount) error {
 	err := u.repository.UpdateFoodPlace(in.UserId, &entities.InsertFoodPlaceDto{Verified: true})
 	if err != nil {
@@ -86,9 +99,7 @@ func (u *accountUsecaseImpl) AddPersonAccount(in *models.AddPersonAccountData) e
 
 func (u *accountUsecaseImpl) GetAccountDetails(in *models.GetAccountData) (*entities.User, error) {
 	found, err := u.repository.SelectUser(&entities.GetUserDto{
-		Username:    in.Username,
-		Email:       in.Email,
-		PhoneNumber: in.PhoneNumber,
+		ID: in.Id,
 	})
 
 	if err != nil {

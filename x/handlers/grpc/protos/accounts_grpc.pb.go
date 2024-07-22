@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
+	Accounts_GetUserId_FullMethodName              = "/accounts.v1.accounts.Accounts/GetUserId"
 	Accounts_VerifyFoodPlaceAccount_FullMethodName = "/accounts.v1.accounts.Accounts/VerifyFoodPlaceAccount"
 	Accounts_AddFoodPlaceAccount_FullMethodName    = "/accounts.v1.accounts.Accounts/AddFoodPlaceAccount"
 	Accounts_GetAccountDetails_FullMethodName      = "/accounts.v1.accounts.Accounts/GetAccountDetails"
@@ -29,6 +30,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountsClient interface {
+	GetUserId(ctx context.Context, in *GetUserIdRequest, opts ...grpc.CallOption) (*GetUserIdResponse, error)
 	VerifyFoodPlaceAccount(ctx context.Context, in *VerifyFoodPlaceAccountRequest, opts ...grpc.CallOption) (*VerifyFoodPlaceAccountResponse, error)
 	AddFoodPlaceAccount(ctx context.Context, in *AddFoodPlaceAccountRequest, opts ...grpc.CallOption) (*AddFoodPlaceAccountResponse, error)
 	GetAccountDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetAccountDetailsResponse, error)
@@ -41,6 +43,16 @@ type accountsClient struct {
 
 func NewAccountsClient(cc grpc.ClientConnInterface) AccountsClient {
 	return &accountsClient{cc}
+}
+
+func (c *accountsClient) GetUserId(ctx context.Context, in *GetUserIdRequest, opts ...grpc.CallOption) (*GetUserIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserIdResponse)
+	err := c.cc.Invoke(ctx, Accounts_GetUserId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *accountsClient) VerifyFoodPlaceAccount(ctx context.Context, in *VerifyFoodPlaceAccountRequest, opts ...grpc.CallOption) (*VerifyFoodPlaceAccountResponse, error) {
@@ -87,6 +99,7 @@ func (c *accountsClient) AddPersonAccount(ctx context.Context, in *AddPersonAcco
 // All implementations must embed UnimplementedAccountsServer
 // for forward compatibility
 type AccountsServer interface {
+	GetUserId(context.Context, *GetUserIdRequest) (*GetUserIdResponse, error)
 	VerifyFoodPlaceAccount(context.Context, *VerifyFoodPlaceAccountRequest) (*VerifyFoodPlaceAccountResponse, error)
 	AddFoodPlaceAccount(context.Context, *AddFoodPlaceAccountRequest) (*AddFoodPlaceAccountResponse, error)
 	GetAccountDetails(context.Context, *GetAccountDetailsRequest) (*GetAccountDetailsResponse, error)
@@ -98,6 +111,9 @@ type AccountsServer interface {
 type UnimplementedAccountsServer struct {
 }
 
+func (UnimplementedAccountsServer) GetUserId(context.Context, *GetUserIdRequest) (*GetUserIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserId not implemented")
+}
 func (UnimplementedAccountsServer) VerifyFoodPlaceAccount(context.Context, *VerifyFoodPlaceAccountRequest) (*VerifyFoodPlaceAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyFoodPlaceAccount not implemented")
 }
@@ -121,6 +137,24 @@ type UnsafeAccountsServer interface {
 
 func RegisterAccountsServer(s grpc.ServiceRegistrar, srv AccountsServer) {
 	s.RegisterService(&Accounts_ServiceDesc, srv)
+}
+
+func _Accounts_GetUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountsServer).GetUserId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Accounts_GetUserId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountsServer).GetUserId(ctx, req.(*GetUserIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Accounts_VerifyFoodPlaceAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -202,6 +236,10 @@ var Accounts_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "accounts.v1.accounts.Accounts",
 	HandlerType: (*AccountsServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetUserId",
+			Handler:    _Accounts_GetUserId_Handler,
+		},
 		{
 			MethodName: "VerifyFoodPlaceAccount",
 			Handler:    _Accounts_VerifyFoodPlaceAccount_Handler,

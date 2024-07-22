@@ -9,6 +9,6 @@ import (
 func main() {
 	config.InitViper("config.yaml")
 	cfg := config.LoadConfig()
-	db := database.NewMySQLDatabase(cfg)
+	db := database.NewMySQLDatabase(cfg, nil)
 	db.GetDb().AutoMigrate(&entities.InsertFoodPlaceDto{})
 }

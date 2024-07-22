@@ -6,7 +6,7 @@ import (
 
 	"github.com/emaforlin/accounts-service/x/handlers/grpc/protos"
 	"github.com/emaforlin/accounts-service/x/models"
-	"github.com/go-playground/validator/v10"
+	validator "github.com/go-playground/validator/v10"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -34,11 +34,16 @@ func Validation(ctx context.Context, req any, info *grpc.UnaryServerInfo, handle
 
 func mapReq(req any) (any, error) {
 	switch r := req.(type) {
-	case *protos.GetAccountDetailsRequest:
-		mappedStruct := &models.GetAccountData{
+	case *protos.GetUserIdRequest:
+		mappedStruct := &models.GetUserId{
 			Username:    r.GetUsername(),
 			Email:       r.GetEmail(),
 			PhoneNumber: r.GetPhoneNumber(),
+		}
+		return mappedStruct, nil
+	case *protos.GetAccountDetailsRequest:
+		mappedStruct := &models.GetAccountData{
+			Id: r.GetUserid(),
 		}
 		return mappedStruct, nil
 

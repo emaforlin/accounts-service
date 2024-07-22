@@ -3,7 +3,7 @@ package handlers
 import (
 	"context"
 
-	protos "github.com/emaforlin/accounts-service/x/handlers/grpc/protos"
+	"github.com/emaforlin/accounts-service/x/handlers/grpc/protos"
 	"github.com/emaforlin/accounts-service/x/models"
 	"github.com/emaforlin/accounts-service/x/usecases"
 	hclog "github.com/hashicorp/go-hclog"
@@ -16,14 +16,38 @@ type accountServerImpl struct {
 	usecase usecases.AccountUsecase
 }
 
+func (h *accountServerImpl) GetUserId(ctx context.Context, in *protos.GetUserIdRequest) (*protos.GetUserIdResponse, error) {
+	h.log.Info("Handle: Get user id")
+
+	input := &models.GetUserId{
+		Username:    in.GetUsername(),
+		Email:       in.GetEmail(),
+		PhoneNumber: in.GetPhoneNumber(),
+	}
+
+	h.log.Debug("input: %v", input)
+
+	id, err := h.usecase.GetUserId(input)
+
+	if err != nil {
+		return &protos.GetUserIdResponse{
+			Userid: -10,
+		}, nil
+	}
+
+	return &protos.GetUserIdResponse{
+		Userid: id,
+	}, nil
+}
+
 func (h *accountServerImpl) VerifyFoodPlaceAccount(ctx context.Context, fp *protos.VerifyFoodPlaceAccountRequest) (*protos.VerifyFoodPlaceAccountResponse, error) {
 	h.log.Info("Handle: Verify food place account ")
 
-	input := models.VerifyFoodPlaceAccount{
+	input := &models.VerifyFoodPlaceAccount{
 		UserId: fp.GetUserid(),
 	}
 
-	if err := h.usecase.VerifyFoodPlaceAccount(&input); err != nil {
+	if err := h.usecase.VerifyFoodPlaceAccount(input); err != nil {
 		h.log.Error("Account could not be verified")
 		return nil, err
 	}
@@ -75,9 +99,7 @@ func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.Ge
 	h.log.Info("Handle: Get User")
 
 	input := &models.GetAccountData{
-		Username:    ar.GetUsername(),
-		Email:       ar.GetEmail(),
-		PhoneNumber: ar.GetPhoneNumber(),
+		Id: ar.GetUserid(),
 	}
 
 	found, err := h.usecase.GetAccountDetails(input)

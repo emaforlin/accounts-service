@@ -6,10 +6,23 @@ import "google/protobuf/timestamp.proto";
 
 
 service Accounts {
+    rpc GetUserId(GetUserIdRequest) returns (GetUserIdResponse);
     rpc VerifyFoodPlaceAccount(VerifyFoodPlaceAccountRequest) returns (VerifyFoodPlaceAccountResponse);
     rpc AddFoodPlaceAccount(AddFoodPlaceAccountRequest) returns (AddFoodPlaceAccountResponse);
     rpc GetAccountDetails(GetAccountDetailsRequest) returns (GetAccountDetailsResponse);
     rpc AddPersonAccount(AddPersonAccountRequest) returns (AddPersonAccountResponse);
+}
+
+message GetUserIdRequest {
+    oneof identifiers {
+        string username = 1;
+        string email = 2;
+        string phone_number = 3;
+    }
+}
+
+message GetUserIdResponse {
+    int32 userid = 1;
 }
 
 message VerifyFoodPlaceAccountRequest {
@@ -42,11 +55,7 @@ message AddPersonAccountRequest {
 message AddPersonAccountResponse {}
 
 message GetAccountDetailsRequest {
-    oneof identifiers {
-        string username = 1;
-        string email = 2;
-        string phone_number = 3;
-    }
+    uint32 userid = 1;
 }
 
 message GetAccountDetailsResponse {
@@ -58,5 +67,4 @@ message GetAccountDetailsResponse {
     google.protobuf.Timestamp created_at = 6;
     google.protobuf.Timestamp updated_at = 7;
     google.protobuf.Timestamp deleted_at = 8;
-
 }
