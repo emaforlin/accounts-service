@@ -7,7 +7,6 @@ import "google/protobuf/timestamp.proto";
 
 service Accounts {
     rpc GetUserId(GetUserIdRequest) returns (GetUserIdResponse);
-    rpc VerifyFoodPlaceAccount(VerifyFoodPlaceAccountRequest) returns (VerifyFoodPlaceAccountResponse);
     rpc AddFoodPlaceAccount(AddFoodPlaceAccountRequest) returns (AddFoodPlaceAccountResponse);
     rpc GetAccountDetails(GetAccountDetailsRequest) returns (GetAccountDetailsResponse);
     rpc AddPersonAccount(AddPersonAccountRequest) returns (AddPersonAccountResponse);
@@ -25,12 +24,6 @@ message GetUserIdResponse {
     int32 userid = 1;
 }
 
-message VerifyFoodPlaceAccountRequest {
-    uint32 userid = 1;
-}
-
-message VerifyFoodPlaceAccountResponse {}
-
 message AddFoodPlaceAccountRequest {
     string username = 1;
     string phone_number = 2;
@@ -41,7 +34,10 @@ message AddFoodPlaceAccountRequest {
     repeated string tags = 7;
 }
 
-message AddFoodPlaceAccountResponse {}
+message AddFoodPlaceAccountResponse {
+    int32 userid = 1;
+    string message = 2;
+}
 
 message AddPersonAccountRequest {
     string username = 1;
@@ -52,7 +48,10 @@ message AddPersonAccountRequest {
     string password = 6;
 }
 
-message AddPersonAccountResponse {}
+message AddPersonAccountResponse {
+    int32 userid = 1;
+    string message = 2;
+}
 
 message GetAccountDetailsRequest {
     uint32 userid = 1;

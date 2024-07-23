@@ -7,10 +7,6 @@ type (
 		PhoneNumber string `validate:""`
 	}
 
-	VerifyFoodPlaceAccount struct {
-		UserId uint32 `validate:"required"`
-	}
-
 	AddPersonAccountData struct {
 		Username    string `validate:"required,min=4,max=30"`
 		FirstName   string `validate:"required,max=40"`

@@ -27,14 +27,6 @@ func (u *accountUsecaseImpl) GetUserId(in *models.GetUserId) (int32, error) {
 	return int32(found.ID), nil
 }
 
-func (u *accountUsecaseImpl) VerifyFoodPlaceAccount(in *models.VerifyFoodPlaceAccount) error {
-	err := u.repository.UpdateFoodPlace(in.UserId, &entities.InsertFoodPlaceDto{Verified: true})
-	if err != nil {
-		return errors.New("account could not be verified")
-	}
-	return nil
-}
-
 func (u *accountUsecaseImpl) AddFoodPlaceAccount(in *models.AddFoodPlaceAccountData) error {
 	_, err := u.repository.SelectUser(&entities.GetUserDto{
 		Username:    in.Username,

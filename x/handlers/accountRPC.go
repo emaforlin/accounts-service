@@ -40,21 +40,6 @@ func (h *accountServerImpl) GetUserId(ctx context.Context, in *protos.GetUserIdR
 	}, nil
 }
 
-func (h *accountServerImpl) VerifyFoodPlaceAccount(ctx context.Context, fp *protos.VerifyFoodPlaceAccountRequest) (*protos.VerifyFoodPlaceAccountResponse, error) {
-	h.log.Info("Handle: Verify food place account ")
-
-	input := &models.VerifyFoodPlaceAccount{
-		UserId: fp.GetUserid(),
-	}
-
-	if err := h.usecase.VerifyFoodPlaceAccount(input); err != nil {
-		h.log.Error("Account could not be verified")
-		return nil, err
-	}
-
-	return &protos.VerifyFoodPlaceAccountResponse{}, nil
-}
-
 func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos.AddFoodPlaceAccountRequest) (*protos.AddFoodPlaceAccountResponse, error) {
 	h.log.Info("Handle: Create food place account")
 
@@ -72,7 +57,12 @@ func (h *accountServerImpl) AddFoodPlaceAccount(ctx context.Context, fpr *protos
 		h.log.Error("Error creating account")
 		return nil, err
 	}
-	return &protos.AddFoodPlaceAccountResponse{}, nil
+
+	id, _ := h.usecase.GetUserId(&models.GetUserId{Username: input.Username})
+	return &protos.AddFoodPlaceAccountResponse{
+		Userid:  id,
+		Message: "Account created successfully",
+	}, nil
 }
 
 func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.AddPersonAccountRequest) (*protos.AddPersonAccountResponse, error) {
@@ -92,7 +82,12 @@ func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.Add
 		return nil, err
 	}
 
-	return &protos.AddPersonAccountResponse{}, nil
+	id, _ := h.usecase.GetUserId(&models.GetUserId{Username: input.Username})
+
+	return &protos.AddPersonAccountResponse{
+		Userid:  id,
+		Message: "Account created successfully",
+	}, nil
 }
 
 func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.GetAccountDetailsRequest) (*protos.GetAccountDetailsResponse, error) {
