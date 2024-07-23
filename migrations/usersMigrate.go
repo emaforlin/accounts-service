@@ -8,9 +8,12 @@ import (
 )
 
 func main() {
+	logger := hclog.New(hclog.DefaultOptions)
 	config.InitViper("config.yaml")
 	cfg := config.LoadConfig()
-	db := database.NewMySQLDatabase(cfg, hclog.Default())
+	db := database.NewMySQLDatabase(cfg, logger)
+
 	db.GetDb().AutoMigrate(&entities.InsertFoodPlaceDto{})
 	db.GetDb().AutoMigrate(&entities.InsertPersonDto{})
+	logger.Info("Done!")
 }

@@ -69,11 +69,6 @@ func mapReq(req any) (any, error) {
 			Tags:         r.GetTags(),
 		}
 		return mappedStruct, nil
-	case *protos.VerifyFoodPlaceAccountRequest:
-		mappedStruct := models.VerifyFoodPlaceAccount{
-			UserId: r.GetUserid(),
-		}
-		return mappedStruct, nil
 	default:
 		return nil, errors.New("request type assertion failed")
 	}
