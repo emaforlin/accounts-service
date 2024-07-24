@@ -6,4 +6,5 @@ import (
 
 type Database interface {
 	GetDb() *gorm.DB
+	AutoMigrate() error
 }

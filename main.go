@@ -22,6 +22,17 @@ func main() {
 	logger.Info("Connect to database")
 	db := database.NewMySQLDatabase(conf, logger)
 
+	if conf.Db.Migrate {
+		logger.Info("Migrating database...")
+		err := db.AutoMigrate()
+		if err != nil {
+			logger.Error(err.Error())
+			logger.Info("Trying to run server anyway")
+		} else {
+			logger.Info("Migration done!")
+		}
+	}
+
 	logger.Info("Setup server...")
 	server.NewRPCServer(logger, conf, db).Start()
 }
