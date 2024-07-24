@@ -90,27 +90,68 @@ func (h *accountServerImpl) AddPersonAccount(ctx context.Context, pr *protos.Add
 	}, nil
 }
 
-func (h *accountServerImpl) GetAccountDetails(ctx context.Context, ar *protos.GetAccountDetailsRequest) (*protos.GetAccountDetailsResponse, error) {
+func (h *accountServerImpl) GetFoodPlaceDetails(ctx context.Context, ar *protos.GetAccountDetailsRequest) (*protos.GetFoodPlaceDetailsResponse, error) {
+	h.log.Info("Handle: Get food place")
+
+	input := &models.GetAccountData{
+		Id: ar.GetUserid(),
+	}
+
+	acc, err := h.usecase.GetAccountDetails(input)
+	if err != nil {
+		h.log.Error("Cannot find user")
+		return nil, err
+	}
+
+	fp, err := h.usecase.GetFoodPlaceDetails(input)
+	if err != nil {
+		h.log.Error("Cannot find user")
+		return nil, err
+	}
+
+	return &protos.GetFoodPlaceDetailsResponse{
+		Id:           acc.ID,
+		Username:     acc.Username,
+		Email:        acc.Email,
+		PhoneNumber:  acc.PhoneNumber,
+		Role:         acc.Role,
+		BusinessName: fp.BusinessName,
+		Location:     fp.Location,
+		Tags:         fp.Tags,
+		CreatedAt:    timestamppb.New(acc.CreatedAt),
+		UpdatedAt:    timestamppb.New(acc.UpdatedAt),
+	}, nil
+}
+
+func (h *accountServerImpl) GetPersonDetails(ctx context.Context, ar *protos.GetAccountDetailsRequest) (*protos.GetPersonDetailsResponse, error) {
 	h.log.Info("Handle: Get User")
 
 	input := &models.GetAccountData{
 		Id: ar.GetUserid(),
 	}
 
-	found, err := h.usecase.GetAccountDetails(input)
+	acc, err := h.usecase.GetAccountDetails(input)
 	if err != nil {
 		h.log.Error("Cannot find user")
 		return nil, err
 	}
 
-	return &protos.GetAccountDetailsResponse{
-		Id:          found.ID,
-		Username:    found.Username,
-		Email:       found.Email,
-		PhoneNumber: found.PhoneNumber,
-		Role:        found.Role,
-		CreatedAt:   timestamppb.New(found.CreatedAt),
-		UpdatedAt:   timestamppb.New(found.UpdatedAt),
+	fp, err := h.usecase.GetPersonDetails(input)
+	if err != nil {
+		h.log.Error("Cannot find user")
+		return nil, err
+	}
+
+	return &protos.GetPersonDetailsResponse{
+		Id:          acc.ID,
+		Username:    acc.Username,
+		Email:       acc.Email,
+		PhoneNumber: acc.PhoneNumber,
+		Role:        acc.Role,
+		FirstName:   fp.FirstName,
+		LastName:    fp.LastName,
+		CreatedAt:   timestamppb.New(acc.CreatedAt),
+		UpdatedAt:   timestamppb.New(acc.UpdatedAt),
 	}, nil
 }
 

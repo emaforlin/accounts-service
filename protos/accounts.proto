@@ -6,9 +6,10 @@ import "google/protobuf/timestamp.proto";
 
 
 service Accounts {
+    rpc GetPersonDetails(GetAccountDetailsRequest) returns (GetPersonDetailsResponse);
+    rpc GetFoodPlaceDetails(GetAccountDetailsRequest) returns (GetFoodPlaceDetailsResponse);
     rpc GetUserId(GetUserIdRequest) returns (GetUserIdResponse);
     rpc AddFoodPlaceAccount(AddFoodPlaceAccountRequest) returns (AddFoodPlaceAccountResponse);
-    rpc GetAccountDetails(GetAccountDetailsRequest) returns (GetAccountDetailsResponse);
     rpc AddPersonAccount(AddPersonAccountRequest) returns (AddPersonAccountResponse);
 }
 
@@ -53,17 +54,34 @@ message AddPersonAccountResponse {
     string message = 2;
 }
 
+
 message GetAccountDetailsRequest {
     uint32 userid = 1;
 }
 
-message GetAccountDetailsResponse {
+message GetPersonDetailsResponse {
     uint32 id = 1;
     string username = 2;
     string email = 3;
     string phone_number = 4;
     string role = 5;
-    google.protobuf.Timestamp created_at = 6;
-    google.protobuf.Timestamp updated_at = 7;
-    google.protobuf.Timestamp deleted_at = 8;
+    string first_name = 6;
+    string last_name = 7;
+    google.protobuf.Timestamp created_at = 8;
+    google.protobuf.Timestamp updated_at = 9;
+    google.protobuf.Timestamp deleted_at = 10;
+}
+
+message GetFoodPlaceDetailsResponse {
+    uint32 id = 1;
+    string username = 2;
+    string email = 3;
+    string phone_number = 4;
+    string role = 5;
+    string business_name = 6;
+    string location = 7;
+    repeated string tags = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+    google.protobuf.Timestamp deleted_at = 11;
 }

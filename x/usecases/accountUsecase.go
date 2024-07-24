@@ -14,8 +14,28 @@ type accountUsecaseImpl struct {
 	repository repositories.AccountsRepository
 }
 
+func (u *accountUsecaseImpl) GetPersonDetails(in *models.GetAccountData) (*entities.Person, error) {
+	found, err := u.repository.SelectPerson(&entities.GetPersonDto{
+		UserId: in.Id,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return found, nil
+}
+
+func (u *accountUsecaseImpl) GetFoodPlaceDetails(in *models.GetAccountData) (*entities.FoodPlace, error) {
+	found, err := u.repository.SelectFoodPlace(&entities.GetFoodPlaceDto{
+		UserId: in.Id,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return found, nil
+}
+
 func (u *accountUsecaseImpl) GetUserId(in *models.GetUserId) (int32, error) {
-	found, err := u.repository.SelectUser(&entities.GetUserDto{
+	found, err := u.repository.SelectAccount(&entities.GetUserDto{
 		Username:    in.Username,
 		Email:       in.Email,
 		PhoneNumber: in.PhoneNumber,
@@ -28,7 +48,7 @@ func (u *accountUsecaseImpl) GetUserId(in *models.GetUserId) (int32, error) {
 }
 
 func (u *accountUsecaseImpl) AddFoodPlaceAccount(in *models.AddFoodPlaceAccountData) error {
-	_, err := u.repository.SelectUser(&entities.GetUserDto{
+	_, err := u.repository.SelectAccount(&entities.GetUserDto{
 		Username:    in.Username,
 		Email:       in.Email,
 		PhoneNumber: in.PhoneNumber,
@@ -36,6 +56,11 @@ func (u *accountUsecaseImpl) AddFoodPlaceAccount(in *models.AddFoodPlaceAccountD
 
 	if err != nil {
 		return err
+	}
+	var tags string
+
+	for _, t := range in.Tags {
+		tags = fmt.Sprintf("%s %s", tags, t)
 	}
 
 	dto := entities.InsertFoodPlaceDto{
@@ -48,10 +73,11 @@ func (u *accountUsecaseImpl) AddFoodPlaceAccount(in *models.AddFoodPlaceAccountD
 			PhoneNumber: in.PhoneNumber,
 			Password:    in.Password,
 		},
+		Tags: tags,
 	}
+
 	err = u.repository.InsertFoodPlace(&dto)
 	if err != nil {
-		log.Err(err)
 		return fmt.Errorf("error creating account")
 	}
 
@@ -59,7 +85,7 @@ func (u *accountUsecaseImpl) AddFoodPlaceAccount(in *models.AddFoodPlaceAccountD
 }
 
 func (u *accountUsecaseImpl) AddPersonAccount(in *models.AddPersonAccountData) error {
-	_, err := u.repository.SelectUser(&entities.GetUserDto{
+	_, err := u.repository.SelectAccount(&entities.GetUserDto{
 		Username:    in.Username,
 		Email:       in.Email,
 		PhoneNumber: in.PhoneNumber,
@@ -78,27 +104,27 @@ func (u *accountUsecaseImpl) AddPersonAccount(in *models.AddPersonAccountData) e
 			Email:       in.Email,
 			PhoneNumber: in.PhoneNumber,
 			Password:    in.Password,
+			Verified:    false,
 		},
 	}
 
 	err = u.repository.InsertPerson(&dto)
 	if err != nil {
-		log.Err(err)
 		return fmt.Errorf("error creating account")
 	}
 	return nil
 }
 
 func (u *accountUsecaseImpl) GetAccountDetails(in *models.GetAccountData) (*entities.User, error) {
-	found, err := u.repository.SelectUser(&entities.GetUserDto{
+	found, err := u.repository.SelectAccount(&entities.GetUserDto{
 		ID: in.Id,
 	})
 
 	if err != nil {
-		log.Err(err)
-		return nil, fmt.Errorf("error user not found")
+		return nil, err
 	}
 
+	found.Password = ""
 	return found, nil
 }
 

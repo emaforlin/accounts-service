@@ -20,7 +20,7 @@ Setup the service instace by editing `config.yaml`.
 ``` yaml
 service:
   api: "v0.1"
-  port: 50010
+  port: 50014 # now this is harcoded 
 database:
   name: "accounts-service"
   user: "app-user"

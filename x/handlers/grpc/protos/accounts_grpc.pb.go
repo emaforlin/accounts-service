@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
+	Accounts_GetPersonDetails_FullMethodName    = "/accounts.v1.accounts.Accounts/GetPersonDetails"
+	Accounts_GetFoodPlaceDetails_FullMethodName = "/accounts.v1.accounts.Accounts/GetFoodPlaceDetails"
 	Accounts_GetUserId_FullMethodName           = "/accounts.v1.accounts.Accounts/GetUserId"
 	Accounts_AddFoodPlaceAccount_FullMethodName = "/accounts.v1.accounts.Accounts/AddFoodPlaceAccount"
-	Accounts_GetAccountDetails_FullMethodName   = "/accounts.v1.accounts.Accounts/GetAccountDetails"
 	Accounts_AddPersonAccount_FullMethodName    = "/accounts.v1.accounts.Accounts/AddPersonAccount"
 )
 
@@ -29,9 +30,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountsClient interface {
+	GetPersonDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetPersonDetailsResponse, error)
+	GetFoodPlaceDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetFoodPlaceDetailsResponse, error)
 	GetUserId(ctx context.Context, in *GetUserIdRequest, opts ...grpc.CallOption) (*GetUserIdResponse, error)
 	AddFoodPlaceAccount(ctx context.Context, in *AddFoodPlaceAccountRequest, opts ...grpc.CallOption) (*AddFoodPlaceAccountResponse, error)
-	GetAccountDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetAccountDetailsResponse, error)
 	AddPersonAccount(ctx context.Context, in *AddPersonAccountRequest, opts ...grpc.CallOption) (*AddPersonAccountResponse, error)
 }
 
@@ -41,6 +43,26 @@ type accountsClient struct {
 
 func NewAccountsClient(cc grpc.ClientConnInterface) AccountsClient {
 	return &accountsClient{cc}
+}
+
+func (c *accountsClient) GetPersonDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetPersonDetailsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPersonDetailsResponse)
+	err := c.cc.Invoke(ctx, Accounts_GetPersonDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accountsClient) GetFoodPlaceDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetFoodPlaceDetailsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetFoodPlaceDetailsResponse)
+	err := c.cc.Invoke(ctx, Accounts_GetFoodPlaceDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *accountsClient) GetUserId(ctx context.Context, in *GetUserIdRequest, opts ...grpc.CallOption) (*GetUserIdResponse, error) {
@@ -63,16 +85,6 @@ func (c *accountsClient) AddFoodPlaceAccount(ctx context.Context, in *AddFoodPla
 	return out, nil
 }
 
-func (c *accountsClient) GetAccountDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetAccountDetailsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetAccountDetailsResponse)
-	err := c.cc.Invoke(ctx, Accounts_GetAccountDetails_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *accountsClient) AddPersonAccount(ctx context.Context, in *AddPersonAccountRequest, opts ...grpc.CallOption) (*AddPersonAccountResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AddPersonAccountResponse)
@@ -87,9 +99,10 @@ func (c *accountsClient) AddPersonAccount(ctx context.Context, in *AddPersonAcco
 // All implementations must embed UnimplementedAccountsServer
 // for forward compatibility
 type AccountsServer interface {
+	GetPersonDetails(context.Context, *GetAccountDetailsRequest) (*GetPersonDetailsResponse, error)
+	GetFoodPlaceDetails(context.Context, *GetAccountDetailsRequest) (*GetFoodPlaceDetailsResponse, error)
 	GetUserId(context.Context, *GetUserIdRequest) (*GetUserIdResponse, error)
 	AddFoodPlaceAccount(context.Context, *AddFoodPlaceAccountRequest) (*AddFoodPlaceAccountResponse, error)
-	GetAccountDetails(context.Context, *GetAccountDetailsRequest) (*GetAccountDetailsResponse, error)
 	AddPersonAccount(context.Context, *AddPersonAccountRequest) (*AddPersonAccountResponse, error)
 	mustEmbedUnimplementedAccountsServer()
 }
@@ -98,14 +111,17 @@ type AccountsServer interface {
 type UnimplementedAccountsServer struct {
 }
 
+func (UnimplementedAccountsServer) GetPersonDetails(context.Context, *GetAccountDetailsRequest) (*GetPersonDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPersonDetails not implemented")
+}
+func (UnimplementedAccountsServer) GetFoodPlaceDetails(context.Context, *GetAccountDetailsRequest) (*GetFoodPlaceDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFoodPlaceDetails not implemented")
+}
 func (UnimplementedAccountsServer) GetUserId(context.Context, *GetUserIdRequest) (*GetUserIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserId not implemented")
 }
 func (UnimplementedAccountsServer) AddFoodPlaceAccount(context.Context, *AddFoodPlaceAccountRequest) (*AddFoodPlaceAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddFoodPlaceAccount not implemented")
-}
-func (UnimplementedAccountsServer) GetAccountDetails(context.Context, *GetAccountDetailsRequest) (*GetAccountDetailsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAccountDetails not implemented")
 }
 func (UnimplementedAccountsServer) AddPersonAccount(context.Context, *AddPersonAccountRequest) (*AddPersonAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddPersonAccount not implemented")
@@ -121,6 +137,42 @@ type UnsafeAccountsServer interface {
 
 func RegisterAccountsServer(s grpc.ServiceRegistrar, srv AccountsServer) {
 	s.RegisterService(&Accounts_ServiceDesc, srv)
+}
+
+func _Accounts_GetPersonDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAccountDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountsServer).GetPersonDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Accounts_GetPersonDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountsServer).GetPersonDetails(ctx, req.(*GetAccountDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Accounts_GetFoodPlaceDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAccountDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountsServer).GetFoodPlaceDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Accounts_GetFoodPlaceDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountsServer).GetFoodPlaceDetails(ctx, req.(*GetAccountDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Accounts_GetUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -159,24 +211,6 @@ func _Accounts_AddFoodPlaceAccount_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Accounts_GetAccountDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAccountDetailsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AccountsServer).GetAccountDetails(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Accounts_GetAccountDetails_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountsServer).GetAccountDetails(ctx, req.(*GetAccountDetailsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Accounts_AddPersonAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddPersonAccountRequest)
 	if err := dec(in); err != nil {
@@ -203,16 +237,20 @@ var Accounts_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AccountsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "GetPersonDetails",
+			Handler:    _Accounts_GetPersonDetails_Handler,
+		},
+		{
+			MethodName: "GetFoodPlaceDetails",
+			Handler:    _Accounts_GetFoodPlaceDetails_Handler,
+		},
+		{
 			MethodName: "GetUserId",
 			Handler:    _Accounts_GetUserId_Handler,
 		},
 		{
 			MethodName: "AddFoodPlaceAccount",
 			Handler:    _Accounts_AddFoodPlaceAccount_Handler,
-		},
-		{
-			MethodName: "GetAccountDetails",
-			Handler:    _Accounts_GetAccountDetails_Handler,
 		},
 		{
 			MethodName: "AddPersonAccount",
