@@ -6,7 +6,7 @@ COPY . .
 
 FROM scratch
 
-COPY --from=build /go/bin/accounts-service /go/bin/accounts-service
+COPY --from=build /go/bin/accounts-service /go/bin/
 
 EXPOSE 50014
 
