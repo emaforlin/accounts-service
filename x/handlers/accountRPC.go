@@ -25,9 +25,8 @@ func (h *accountServerImpl) LoginUser(ctx context.Context, in *pb.LoginUserReque
 		fmt.Printf("%v", err)
 		return nil, err
 	}
-	fmt.Printf("%v", jwt)
 	meta := metadata.MD{}
-	meta.Append("authorization", "Bearer"+jwt)
+	meta.Append("authorization", "Bearer "+jwt)
 
 	if err := grpc.SetHeader(ctx, meta); err != nil {
 		return nil, err
