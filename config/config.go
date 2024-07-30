@@ -9,8 +9,10 @@ import (
 var migrate bool
 
 type Config struct {
-	App App
-	Db  Db
+	App           App
+	Db            Db
+	Jwt           Jwt
+	AccessControl map[string][]string
 }
 
 type App struct {
@@ -27,10 +29,12 @@ type Db struct {
 	Host    string
 }
 
-func LoadConfig() *Config {
-	flag.BoolVar(&migrate, "migrate", false, "enables database auto migration")
-	flag.Parse()
+type Jwt struct {
+	Secret []byte
+	TTL    uint
+}
 
+func LoadConfig() *Config {
 	return &Config{
 		App: App{
 			ApiVersion: viper.GetString("service.api"),
@@ -43,10 +47,17 @@ func LoadConfig() *Config {
 			Passwd:  viper.GetString("database.password"),
 			Host:    viper.GetString("database.host"),
 		},
+		Jwt: Jwt{
+			Secret: []byte(viper.GetString("jwt.secret")),
+			TTL:    viper.GetUint("jwt.ttl"),
+		},
+		AccessControl: viper.GetStringMapStringSlice("permissions"),
 	}
 }
 
 func InitViper(filename string) {
+	flag.BoolVar(&migrate, "migrate", false, "enables database auto migration")
+	flag.Parse()
 	viper.SetConfigName(filename)
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./")

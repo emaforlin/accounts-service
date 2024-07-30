@@ -29,4 +29,12 @@ type (
 		Location     string   `validate:"required,max=256"`
 		Tags         []string `validate:"required"`
 	}
+
+	LoginAccount struct {
+		Email       string `validate:""`
+		Username    string `validate:""`
+		PhoneNumber string `validate:""`
+		Password    string `validate:""`
+		Role        string `validate:""`
+	}
 )

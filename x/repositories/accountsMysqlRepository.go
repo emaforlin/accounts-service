@@ -83,7 +83,6 @@ func (u *accountsMysqlRepositoryImpl) DeleteUser(in *entities.GetUserDto) error 
 func (u *accountsMysqlRepositoryImpl) SelectAccount(in *entities.GetUserDto) (*entities.User, error) {
 	result := &entities.User{}
 	response := u.db.GetDb().Model(entities.GetUserDto{}).Find(&result, in)
-
 	if response.Error != nil {
 		return nil, response.Error
 	}

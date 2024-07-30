@@ -21,7 +21,7 @@ import (
 
 type rpcServer struct {
 	log hclog.Logger
-	cfg *config.Config
+	cfg config.Config
 	gs  *grpc.Server
 	db  database.Database
 }
@@ -66,7 +66,7 @@ func (r *rpcServer) initializeHttpHandlers() {
 	repository := repositories.NewAccountMysqlRepositoryImpl(r.db)
 
 	// create usecase
-	usecase := usecases.NewAccountUsecaseImpl(repository)
+	usecase := usecases.NewAccountUsecaseImpl(repository, r.cfg)
 
 	// create handler
 	ah := handlers.NewAccountGRPCHandler(r.log, usecase)
@@ -78,11 +78,11 @@ func (r *rpcServer) initializeHttpHandlers() {
 	protos.RegisterAccountsServer(r.gs, ah)
 }
 
-func NewRPCServer(l hclog.Logger, c *config.Config, db database.Database) Server {
+func NewRPCServer(l hclog.Logger, c config.Config, db database.Database) Server {
 	return &rpcServer{
 		log: l,
 		cfg: c,
 		db:  db,
-		gs:  grpc.NewServer(grpc.UnaryInterceptor(interceptors.Validation)),
+		gs:  grpc.NewServer(grpc.ChainUnaryInterceptor(interceptors.JWTAuth, interceptors.ValidationUnary)),
 	}
 }

@@ -1,16 +1,31 @@
 syntax = "proto3";
 
-package accounts.v1.accounts;
+package accounts.v1;
 
 import "google/protobuf/timestamp.proto";
 
 
 service Accounts {
+    rpc LoginUser(LoginUserRequest) returns (LoginUserResponse);
     rpc GetPersonDetails(GetAccountDetailsRequest) returns (GetPersonDetailsResponse);
     rpc GetFoodPlaceDetails(GetAccountDetailsRequest) returns (GetFoodPlaceDetailsResponse);
     rpc GetUserId(GetUserIdRequest) returns (GetUserIdResponse);
     rpc AddFoodPlaceAccount(AddFoodPlaceAccountRequest) returns (AddFoodPlaceAccountResponse);
     rpc AddPersonAccount(AddPersonAccountRequest) returns (AddPersonAccountResponse);
+}
+
+message LoginUserRequest {
+    oneof identifiers {
+        string email = 1;
+        string username = 2;
+        string phone_number = 3;
+    };
+    string password = 4;
+    string role = 5;
+}
+
+message LoginUserResponse {
+    string token = 1;
 }
 
 message GetUserIdRequest {
@@ -37,7 +52,6 @@ message AddFoodPlaceAccountRequest {
 
 message AddFoodPlaceAccountResponse {
     int32 userid = 1;
-    string message = 2;
 }
 
 message AddPersonAccountRequest {
@@ -51,9 +65,7 @@ message AddPersonAccountRequest {
 
 message AddPersonAccountResponse {
     int32 userid = 1;
-    string message = 2;
 }
-
 
 message GetAccountDetailsRequest {
     uint32 userid = 1;

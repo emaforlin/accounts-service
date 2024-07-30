@@ -13,11 +13,13 @@ func main() {
 	logger := hclog.FromStandardLogger(log.Default(), &hclog.LoggerOptions{
 		Name:  "accounts-service",
 		Level: hclog.Info,
+		// Level: hclog.Debug,
 	})
 
 	logger.Info("Load configurations")
 	config.InitViper("config.yaml")
 	conf := config.LoadConfig()
+	logger.Debug("Permissions loaded", conf.AccessControl)
 
 	logger.Info("Connect to database")
 	db := database.NewMySQLDatabase(conf, logger)
@@ -34,5 +36,5 @@ func main() {
 	}
 
 	logger.Info("Setup server...")
-	server.NewRPCServer(logger, conf, db).Start()
+	server.NewRPCServer(logger, *conf, db).Start()
 }

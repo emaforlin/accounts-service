@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: protos/accounts.proto
 
-package protos
+package accountsv1
 
 import (
 	context "context"
@@ -19,17 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	Accounts_GetPersonDetails_FullMethodName    = "/accounts.v1.accounts.Accounts/GetPersonDetails"
-	Accounts_GetFoodPlaceDetails_FullMethodName = "/accounts.v1.accounts.Accounts/GetFoodPlaceDetails"
-	Accounts_GetUserId_FullMethodName           = "/accounts.v1.accounts.Accounts/GetUserId"
-	Accounts_AddFoodPlaceAccount_FullMethodName = "/accounts.v1.accounts.Accounts/AddFoodPlaceAccount"
-	Accounts_AddPersonAccount_FullMethodName    = "/accounts.v1.accounts.Accounts/AddPersonAccount"
+	Accounts_LoginUser_FullMethodName           = "/accounts.v1.Accounts/LoginUser"
+	Accounts_GetPersonDetails_FullMethodName    = "/accounts.v1.Accounts/GetPersonDetails"
+	Accounts_GetFoodPlaceDetails_FullMethodName = "/accounts.v1.Accounts/GetFoodPlaceDetails"
+	Accounts_GetUserId_FullMethodName           = "/accounts.v1.Accounts/GetUserId"
+	Accounts_AddFoodPlaceAccount_FullMethodName = "/accounts.v1.Accounts/AddFoodPlaceAccount"
+	Accounts_AddPersonAccount_FullMethodName    = "/accounts.v1.Accounts/AddPersonAccount"
 )
 
 // AccountsClient is the client API for Accounts service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountsClient interface {
+	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
 	GetPersonDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetPersonDetailsResponse, error)
 	GetFoodPlaceDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetFoodPlaceDetailsResponse, error)
 	GetUserId(ctx context.Context, in *GetUserIdRequest, opts ...grpc.CallOption) (*GetUserIdResponse, error)
@@ -43,6 +45,16 @@ type accountsClient struct {
 
 func NewAccountsClient(cc grpc.ClientConnInterface) AccountsClient {
 	return &accountsClient{cc}
+}
+
+func (c *accountsClient) LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LoginUserResponse)
+	err := c.cc.Invoke(ctx, Accounts_LoginUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *accountsClient) GetPersonDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetPersonDetailsResponse, error) {
@@ -99,6 +111,7 @@ func (c *accountsClient) AddPersonAccount(ctx context.Context, in *AddPersonAcco
 // All implementations must embed UnimplementedAccountsServer
 // for forward compatibility
 type AccountsServer interface {
+	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
 	GetPersonDetails(context.Context, *GetAccountDetailsRequest) (*GetPersonDetailsResponse, error)
 	GetFoodPlaceDetails(context.Context, *GetAccountDetailsRequest) (*GetFoodPlaceDetailsResponse, error)
 	GetUserId(context.Context, *GetUserIdRequest) (*GetUserIdResponse, error)
@@ -111,6 +124,9 @@ type AccountsServer interface {
 type UnimplementedAccountsServer struct {
 }
 
+func (UnimplementedAccountsServer) LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
+}
 func (UnimplementedAccountsServer) GetPersonDetails(context.Context, *GetAccountDetailsRequest) (*GetPersonDetailsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPersonDetails not implemented")
 }
@@ -137,6 +153,24 @@ type UnsafeAccountsServer interface {
 
 func RegisterAccountsServer(s grpc.ServiceRegistrar, srv AccountsServer) {
 	s.RegisterService(&Accounts_ServiceDesc, srv)
+}
+
+func _Accounts_LoginUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountsServer).LoginUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Accounts_LoginUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountsServer).LoginUser(ctx, req.(*LoginUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Accounts_GetPersonDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -233,9 +267,13 @@ func _Accounts_AddPersonAccount_Handler(srv interface{}, ctx context.Context, de
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Accounts_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "accounts.v1.accounts.Accounts",
+	ServiceName: "accounts.v1.Accounts",
 	HandlerType: (*AccountsServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "LoginUser",
+			Handler:    _Accounts_LoginUser_Handler,
+		},
 		{
 			MethodName: "GetPersonDetails",
 			Handler:    _Accounts_GetPersonDetails_Handler,

@@ -7,6 +7,11 @@ import (
 )
 
 type (
+	UserData struct {
+		Id   uint32
+		Role string
+	}
+
 	InsertUserDto struct {
 		ID          uint32         `gorm:"primaryKey;autoIncrement" json:"user_id"`
 		Username    string         `gorm:"not null;unique" json:"username"`

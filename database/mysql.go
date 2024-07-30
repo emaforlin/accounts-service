@@ -24,7 +24,7 @@ func (p *mysqlDatabase) AutoMigrate() error {
 
 	errorStr = fmt.Sprintf("%v%v", err1, err2)
 	if len(errorStr) != 0 {
-		return errors.New("error migrating database")
+		return errors.New("error migrating database: " + errorStr)
 	}
 	return nil
 }
