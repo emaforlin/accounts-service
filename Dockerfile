@@ -14,4 +14,4 @@ EXPOSE 50014
 
 ENV MIGRATE=false
 
-ENTRYPOINT [ "/go/bin/accounts-service","-migrate=${MIGRATE}" ]
+ENTRYPOINT [ "/go/bin/accounts-service","-migrate=$MIGRATE" ]
