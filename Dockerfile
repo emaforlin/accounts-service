@@ -4,9 +4,11 @@ WORKDIR /go/src/accounts-service
 
 COPY . .
 
+RUN go build -o /go/bin/accounts-service .
+
 FROM scratch
 
-COPY --from=build /go/bin/accounts-service /go/bin/
+COPY --from=build /go/bin/accounts-service /go/bin/accounts-service
 
 EXPOSE 50014
 
