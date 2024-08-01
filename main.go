@@ -17,7 +17,7 @@ func main() {
 	})
 
 	logger.Info("Load configurations")
-	config.InitViper("config.yaml")
+	config.InitViper("config")
 	conf := config.LoadConfig()
 	logger.Debug("Permissions loaded", conf.AccessControl)
 
