@@ -1,26 +1,21 @@
-FROM golang:1.22.5-alpine3.20 AS build-stage
+FROM golang:1.22.5-alpine3.20 AS build
 
-WORKDIR /app
+WORKDIR /go/src/accounts-service
 
-COPY ./ ./
+COPY . .
 
 RUN go mod download
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /accounts-service
+ARG CGO_ENABLED=0 GOOS=linux
 
+RUN go build -o /out/accounts-service
 
-FROM alpine:3.20 AS build-release-stage
+FROM alpine:3.20
 
-WORKDIR /
+WORKDIR /app
 
-COPY --from=build-stage /accounts-service /accounts-service
-
-COPY  entrypoint.sh entrypoint.sh
+COPY --from=build /out/accounts-service ./
 
 EXPOSE 50014
 
-ENV MIGRATE=false
-
-RUN chmod +x entrypoint.sh
-
-ENTRYPOINT [ "./entrypoint.sh" ]
+ENTRYPOINT [ "/app/accounts-service", "-migrate", "$MIGRATE" ]

@@ -1,0 +1,9 @@
+# Exclude everything except .go files
+
+Dockerfile.bak
+protos/
+misc/
+.gitignore
+README.md
+buf.*
+config.*
