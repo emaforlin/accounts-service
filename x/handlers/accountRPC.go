@@ -31,7 +31,7 @@ func (h *accountServerImpl) LoginUser(ctx context.Context, in *pb.LoginUserReque
 	if err := grpc.SetHeader(ctx, meta); err != nil {
 		return nil, err
 	}
-	return &pb.LoginUserResponse{Token: jwt}, nil
+	return &pb.LoginUserResponse{}, nil
 }
 
 func (h *accountServerImpl) GetUserId(ctx context.Context, in *pb.GetUserIdRequest) (*pb.GetUserIdResponse, error) {

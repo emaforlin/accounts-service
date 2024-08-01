@@ -24,9 +24,7 @@ message LoginUserRequest {
     string role = 5;
 }
 
-message LoginUserResponse {
-    string token = 1;
-}
+message LoginUserResponse {}
 
 message GetUserIdRequest {
     oneof identifiers {
