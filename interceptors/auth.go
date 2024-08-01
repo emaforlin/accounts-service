@@ -34,7 +34,7 @@ func JWTAuth(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler g
 		}
 	}
 	if !checkAccess(strings.ToLower(userData.Role), info.FullMethod) {
-		return nil, status.Error(codes.Unauthenticated, "user has no requiered permission")
+		return nil, status.Error(codes.Unauthenticated, "user need permission")
 	}
 
 	return handler(ctx, req)
