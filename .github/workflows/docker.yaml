@@ -2,8 +2,6 @@ name: Create and push docker image to registry
 
 on:
   push:
-    branches:
-      - "**"
     tags:
       - "v*.*.*"
 
