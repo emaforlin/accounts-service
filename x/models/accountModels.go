@@ -4,40 +4,40 @@ import pb "github.com/emaforlin/accounts-service/x/handlers/grpc/protos"
 
 type (
 	GetUserId struct {
-		Username    string `validate:""`
-		Email       string `validate:""`
-		PhoneNumber string `validate:""`
+		Username    string `json:"username" validate:""`
+		Email       string `json:"email" validate:""`
+		PhoneNumber string `json:"phone_number" validate:""`
 	}
 
 	AddPersonAccountData struct {
-		Username    string `validate:"required,min=4,max=30"`
-		FirstName   string `validate:"required,max=40"`
-		LastName    string `validate:"required,max=80"`
-		PhoneNumber string `validate:"required,e164"`
-		Email       string `validate:"required,email"`
-		Password    string `validate:"min=8,max=64"`
+		Username    string `json:"username" validate:"required,min=4,max=30"`
+		FirstName   string `json:"firstname" validate:"required,max=40"`
+		LastName    string `json:"lastname" validate:"required,max=80"`
+		PhoneNumber string `json:"phone_number" validate:"required,e164"`
+		Email       string `json:"email" validate:"required,email"`
+		Password    string `json:"password" validate:"min=8,max=64"`
 	}
 
 	GetAccountData struct {
-		Id uint32 `validate:"required"`
+		Id uint32 `json:"id" validate:"required"`
 	}
 
 	AddFoodPlaceAccountData struct {
-		Username     string   `validate:"required,min=4,max=20"`
-		PhoneNumber  string   `validate:"required,e164"`
-		Email        string   `validate:"required,email"`
-		Password     string   `validate:"required,min=8,max=64"`
-		BusinessName string   `validate:"required,max=256"`
-		Location     string   `validate:"required,max=256"`
-		Tags         []string `validate:"required"`
+		Username     string   `json:"username" validate:"required,min=4,max=20"`
+		PhoneNumber  string   `json:"phone_number" validate:"required,e164"`
+		Email        string   `json:"email" validate:"required,email"`
+		Password     string   `json:"password" validate:"required,min=8,max=64"`
+		BusinessName string   `json:"business_name" validate:"required,max=256"`
+		Location     string   `json:"location" validate:"required,max=256"`
+		Tags         []string `json:"tags" validate:"required"`
 	}
 
 	LoginAccount struct {
-		Email       string `validate:""`
-		Username    string `validate:""`
-		PhoneNumber string `validate:""`
-		Password    string `validate:""`
-		Role        string `validate:""`
+		Email       string `json:"email" validate:""`
+		Username    string `json:"username" validate:""`
+		PhoneNumber string `json:"phone_number" validate:""`
+		Password    string `json:"password" validate:""`
+		Role        string `json:"role" validate:""`
 	}
 )
 
