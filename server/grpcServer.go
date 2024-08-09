@@ -83,6 +83,6 @@ func NewRPCServer(l hclog.Logger, c config.Config, db database.Database) Server 
 		log: l,
 		cfg: c,
 		db:  db,
-		gs:  grpc.NewServer(grpc.ChainUnaryInterceptor(interceptors.JWTAuth, interceptors.ValidationUnary)),
+		gs:  grpc.NewServer(grpc.ChainUnaryInterceptor(interceptors.ValidationUnary)),
 	}
 }

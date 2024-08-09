@@ -11,7 +11,6 @@ var migrate bool
 type Config struct {
 	App           App
 	Db            Db
-	Jwt           Jwt
 	AccessControl map[string][]string
 }
 
@@ -29,11 +28,6 @@ type Db struct {
 	Host    string
 }
 
-type Jwt struct {
-	Secret []byte
-	TTL    uint
-}
-
 func LoadConfig() *Config {
 	return &Config{
 		App: App{
@@ -46,10 +40,6 @@ func LoadConfig() *Config {
 			User:    viper.GetString("database.user"),
 			Passwd:  viper.GetString("database.password"),
 			Host:    viper.GetString("database.host"),
-		},
-		Jwt: Jwt{
-			Secret: []byte(viper.GetString("jwt.secret")),
-			TTL:    viper.GetUint("jwt.ttl"),
 		},
 		AccessControl: viper.GetStringMapStringSlice("permissions"),
 	}

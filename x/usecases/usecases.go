@@ -15,7 +15,3 @@ type AccountUsecase interface {
 	GetFoodPlaceDetails(in *models.GetAccountData) (*entities.FoodPlace, error)
 	GetPersonDetails(in *models.GetAccountData) (*entities.Person, error)
 }
-
-type AuthUsecase interface {
-	Authorize(authorization []string) *entities.UserData
-}

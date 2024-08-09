@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/emaforlin/accounts-service/auth"
 	"github.com/emaforlin/accounts-service/config"
 	"github.com/emaforlin/accounts-service/x/entities"
 	protos "github.com/emaforlin/accounts-service/x/handlers/grpc/protos"
@@ -21,7 +20,6 @@ var (
 
 type accountUsecaseImpl struct {
 	repository repositories.AccountsRepository
-	jwtManager *auth.JwtFactory
 }
 
 func (u *accountUsecaseImpl) CheckLoginData(in *protos.CheckUserPassRequest) bool {
@@ -158,6 +156,5 @@ func (u *accountUsecaseImpl) GetAccountDetails(in *models.GetAccountData) (*enti
 func NewAccountUsecaseImpl(repo repositories.AccountsRepository, cfg config.Config) AccountUsecase {
 	return &accountUsecaseImpl{
 		repository: repo,
-		jwtManager: auth.NewJWTFactory(cfg.Jwt),
 	}
 }
