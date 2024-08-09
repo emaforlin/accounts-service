@@ -3,7 +3,6 @@ package usecases
 import (
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/emaforlin/accounts-service/auth"
 	"github.com/emaforlin/accounts-service/config"
@@ -11,7 +10,6 @@ import (
 	protos "github.com/emaforlin/accounts-service/x/handlers/grpc/protos"
 	"github.com/emaforlin/accounts-service/x/models"
 	"github.com/emaforlin/accounts-service/x/repositories"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -26,7 +24,7 @@ type accountUsecaseImpl struct {
 	jwtManager *auth.JwtFactory
 }
 
-func (u *accountUsecaseImpl) Login(in *protos.LoginUserRequest) (string, error) {
+func (u *accountUsecaseImpl) CheckLoginData(in *protos.CheckUserPassRequest) bool {
 	user, err := u.repository.SelectAccount(&entities.GetUserDto{
 		Email:       in.GetEmail(),
 		Username:    in.GetUsername(),
@@ -34,25 +32,12 @@ func (u *accountUsecaseImpl) Login(in *protos.LoginUserRequest) (string, error) 
 		Role:        in.GetRole(),
 	})
 	if err != nil {
-		return "", err
+		return false
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(in.Password)); err != nil {
-		return "", err
+		return false
 	}
-	claims := auth.JwtCustomClaims{
-		UserId: user.ID,
-		Role:   user.Role,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(u.jwtManager.TTL) * time.Second)),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	ss, err := token.SignedString(u.jwtManager.Secret)
-	if err != nil {
-		return "", err
-	}
-	return ss, nil
+	return true
 }
 
 func (u *accountUsecaseImpl) GetPersonDetails(in *models.GetAccountData) (*entities.Person, error) {

@@ -34,8 +34,8 @@ func ValidationUnary(ctx context.Context, req any, info *grpc.UnaryServerInfo, h
 
 func mapReq(req any) (any, error) {
 	switch r := req.(type) {
-	case *protos.LoginUserRequest:
-		mappedStruct := models.LoginAccount{
+	case *protos.CheckUserPassRequest:
+		mappedStruct := models.CheckLoginData{
 			Email:       r.GetEmail(),
 			Username:    r.GetUsername(),
 			PhoneNumber: r.GetPhoneNumber(),

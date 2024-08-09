@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Accounts_LoginUser_FullMethodName           = "/accounts.v1.Accounts/LoginUser"
+	Accounts_CheckLoginData_FullMethodName      = "/accounts.v1.Accounts/CheckLoginData"
 	Accounts_GetPersonDetails_FullMethodName    = "/accounts.v1.Accounts/GetPersonDetails"
 	Accounts_GetFoodPlaceDetails_FullMethodName = "/accounts.v1.Accounts/GetFoodPlaceDetails"
 	Accounts_GetUserId_FullMethodName           = "/accounts.v1.Accounts/GetUserId"
@@ -31,7 +31,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountsClient interface {
-	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
+	CheckLoginData(ctx context.Context, in *CheckUserPassRequest, opts ...grpc.CallOption) (*CheckUserPassResponse, error)
 	GetPersonDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetPersonDetailsResponse, error)
 	GetFoodPlaceDetails(ctx context.Context, in *GetAccountDetailsRequest, opts ...grpc.CallOption) (*GetFoodPlaceDetailsResponse, error)
 	GetUserId(ctx context.Context, in *GetUserIdRequest, opts ...grpc.CallOption) (*GetUserIdResponse, error)
@@ -47,10 +47,10 @@ func NewAccountsClient(cc grpc.ClientConnInterface) AccountsClient {
 	return &accountsClient{cc}
 }
 
-func (c *accountsClient) LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error) {
+func (c *accountsClient) CheckLoginData(ctx context.Context, in *CheckUserPassRequest, opts ...grpc.CallOption) (*CheckUserPassResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LoginUserResponse)
-	err := c.cc.Invoke(ctx, Accounts_LoginUser_FullMethodName, in, out, cOpts...)
+	out := new(CheckUserPassResponse)
+	err := c.cc.Invoke(ctx, Accounts_CheckLoginData_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func (c *accountsClient) AddPersonAccount(ctx context.Context, in *AddPersonAcco
 // All implementations must embed UnimplementedAccountsServer
 // for forward compatibility.
 type AccountsServer interface {
-	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
+	CheckLoginData(context.Context, *CheckUserPassRequest) (*CheckUserPassResponse, error)
 	GetPersonDetails(context.Context, *GetAccountDetailsRequest) (*GetPersonDetailsResponse, error)
 	GetFoodPlaceDetails(context.Context, *GetAccountDetailsRequest) (*GetFoodPlaceDetailsResponse, error)
 	GetUserId(context.Context, *GetUserIdRequest) (*GetUserIdResponse, error)
@@ -127,8 +127,8 @@ type AccountsServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAccountsServer struct{}
 
-func (UnimplementedAccountsServer) LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
+func (UnimplementedAccountsServer) CheckLoginData(context.Context, *CheckUserPassRequest) (*CheckUserPassResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckLoginData not implemented")
 }
 func (UnimplementedAccountsServer) GetPersonDetails(context.Context, *GetAccountDetailsRequest) (*GetPersonDetailsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPersonDetails not implemented")
@@ -166,20 +166,20 @@ func RegisterAccountsServer(s grpc.ServiceRegistrar, srv AccountsServer) {
 	s.RegisterService(&Accounts_ServiceDesc, srv)
 }
 
-func _Accounts_LoginUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginUserRequest)
+func _Accounts_CheckLoginData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckUserPassRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountsServer).LoginUser(ctx, in)
+		return srv.(AccountsServer).CheckLoginData(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Accounts_LoginUser_FullMethodName,
+		FullMethod: Accounts_CheckLoginData_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountsServer).LoginUser(ctx, req.(*LoginUserRequest))
+		return srv.(AccountsServer).CheckLoginData(ctx, req.(*CheckUserPassRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -282,8 +282,8 @@ var Accounts_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AccountsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "LoginUser",
-			Handler:    _Accounts_LoginUser_Handler,
+			MethodName: "CheckLoginData",
+			Handler:    _Accounts_CheckLoginData_Handler,
 		},
 		{
 			MethodName: "GetPersonDetails",

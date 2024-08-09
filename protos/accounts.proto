@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 
 
 service Accounts {
-    rpc LoginUser(LoginUserRequest) returns (LoginUserResponse);
+    rpc CheckLoginData(CheckUserPassRequest) returns (CheckUserPassResponse);
     rpc GetPersonDetails(GetAccountDetailsRequest) returns (GetPersonDetailsResponse);
     rpc GetFoodPlaceDetails(GetAccountDetailsRequest) returns (GetFoodPlaceDetailsResponse);
     rpc GetUserId(GetUserIdRequest) returns (GetUserIdResponse);
@@ -14,7 +14,7 @@ service Accounts {
     rpc AddPersonAccount(AddPersonAccountRequest) returns (AddPersonAccountResponse);
 }
 
-message LoginUserRequest {
+message CheckUserPassRequest {
     oneof identifiers {
         string email = 1;
         string username = 2;
@@ -24,7 +24,9 @@ message LoginUserRequest {
     string role = 5;
 }
 
-message LoginUserResponse {}
+message CheckUserPassResponse {
+    bool ok = 1;
+}
 
 message GetUserIdRequest {
     oneof identifiers {

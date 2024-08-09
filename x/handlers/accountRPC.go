@@ -2,14 +2,12 @@ package handlers
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	pb "github.com/emaforlin/accounts-service/x/handlers/grpc/protos"
 	"github.com/emaforlin/accounts-service/x/models"
 	"github.com/emaforlin/accounts-service/x/usecases"
 	hclog "github.com/hashicorp/go-hclog"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -19,19 +17,12 @@ type accountServerImpl struct {
 	usecase usecases.AccountUsecase
 }
 
-func (h *accountServerImpl) LoginUser(ctx context.Context, in *pb.LoginUserRequest) (*pb.LoginUserResponse, error) {
-	jwt, err := h.usecase.Login(in)
-	if err != nil {
-		fmt.Printf("%v", err)
-		return nil, err
+func (h *accountServerImpl) CheckLoginData(ctx context.Context, in *pb.CheckUserPassRequest) (*pb.CheckUserPassResponse, error) {
+	ok := h.usecase.CheckLoginData(in)
+	if !ok {
+		return &pb.CheckUserPassResponse{Ok: ok}, errors.New("invalid credentials")
 	}
-	meta := metadata.MD{}
-	meta.Append("authorization", "Bearer "+jwt)
-
-	if err := grpc.SetHeader(ctx, meta); err != nil {
-		return nil, err
-	}
-	return &pb.LoginUserResponse{}, nil
+	return &pb.CheckUserPassResponse{Ok: ok}, nil
 }
 
 func (h *accountServerImpl) GetUserId(ctx context.Context, in *pb.GetUserIdRequest) (*pb.GetUserIdResponse, error) {

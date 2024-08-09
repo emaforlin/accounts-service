@@ -32,7 +32,7 @@ type (
 		Tags         []string `json:"tags" validate:"required"`
 	}
 
-	LoginAccount struct {
+	CheckLoginData struct {
 		Email       string `json:"email" validate:""`
 		Username    string `json:"username" validate:""`
 		PhoneNumber string `json:"phone_number" validate:""`
@@ -56,7 +56,7 @@ func (m *GetUserId) ToRPCStruct() *pb.GetUserIdRequest {
 	}
 }
 
-func (m *AddPersonAccountData) ToRPCStruct() *pb.AddPersonAccountRequest {
+func (m AddPersonAccountData) ToRPCStruct() *pb.AddPersonAccountRequest {
 	return &pb.AddPersonAccountRequest{
 		Username:    m.Username,
 		PhoneNumber: m.PhoneNumber,
@@ -83,22 +83,22 @@ func (m *AddFoodPlaceAccountData) ToRPCStruct() *pb.AddFoodPlaceAccountRequest {
 	}
 }
 
-func (m *LoginAccount) ToRPCStruct() *pb.LoginUserRequest {
+func (m *CheckLoginData) ToRPCStruct() *pb.CheckUserPassRequest {
 	if m.Email != "" {
-		return &pb.LoginUserRequest{
-			Identifiers: &pb.LoginUserRequest_Email{Email: m.Email},
+		return &pb.CheckUserPassRequest{
+			Identifiers: &pb.CheckUserPassRequest_Email{Email: m.Email},
 			Password:    m.Password,
 			Role:        m.Role,
 		}
 	} else if m.Username != "" {
-		return &pb.LoginUserRequest{
-			Identifiers: &pb.LoginUserRequest_Username{Username: m.Username},
+		return &pb.CheckUserPassRequest{
+			Identifiers: &pb.CheckUserPassRequest_Username{Username: m.Username},
 			Password:    m.Password,
 			Role:        m.Role,
 		}
 	}
-	return &pb.LoginUserRequest{
-		Identifiers: &pb.LoginUserRequest_PhoneNumber{PhoneNumber: m.PhoneNumber},
+	return &pb.CheckUserPassRequest{
+		Identifiers: &pb.CheckUserPassRequest_PhoneNumber{PhoneNumber: m.PhoneNumber},
 		Password:    m.Password,
 		Role:        m.Role,
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 type AccountUsecase interface {
-	Login(in *protos.LoginUserRequest) (string, error)
+	CheckLoginData(in *protos.CheckUserPassRequest) bool
 	GetUserId(in *models.GetUserId) (int32, error)
 	AddFoodPlaceAccount(in *models.AddFoodPlaceAccountData) error
 	AddPersonAccount(in *models.AddPersonAccountData) error
