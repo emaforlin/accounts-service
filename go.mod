@@ -4,7 +4,6 @@ go 1.22.5
 
 require (
 	github.com/go-playground/validator/v10 v10.22.0
-	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/hashicorp/go-hclog v1.6.3
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/viper v1.19.0
